@@ -50,7 +50,7 @@ public class Index extends HttpServlet {
             Class driverClass = Class.forName(driver);
             connection = DriverManager.getConnection(url, user, password);
             statement = connection.createStatement();
-            String query = "SELECT USERNAME, PASSWORD, ROLE FROM METAL.USERS WHERE USERNAME = '"+u+"' AND PASSWORD = '"+p+"'";
+            String query = "SELECT USERNAME, PASSWORD FROM METAL.USERS WHERE USERNAME = '"+u+"' AND PASSWORD = '"+p+"'";
             resultSet = statement.executeQuery(query);
             boolean resultSetHasRows = resultSet.next(); 
             if (resultSetHasRows) {
