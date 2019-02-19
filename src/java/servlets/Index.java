@@ -50,11 +50,13 @@ public class Index extends HttpServlet {
             Class driverClass = Class.forName(driver);
             connection = DriverManager.getConnection(url, user, password);
             statement = connection.createStatement();
-            String query = "SELECT USERNAME, PASSWORD FROM METAL.USERS WHERE USERNAME = '"+u+"' AND PASSWORD = '"+p+"'";
+            String query = "SELECT USERNAME, PASSWORD, ROLE_ID FROM METAL.USERS WHERE USERNAME = '"+u+"' AND PASSWORD = '"+p+"'";
             resultSet = statement.executeQuery(query);
             boolean resultSetHasRows = resultSet.next(); 
             if (resultSetHasRows) {
                 request.getSession().setAttribute("currentUser", u);
+                int role = resultSet.getInt("ROLE_ID");
+                request.getSession().setAttribute("currentUserRole", role);
                 request.getRequestDispatcher("./MainPage.jsp").forward(request, response);
             }
         } catch (ClassNotFoundException | SQLException e) {

@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,6 +13,20 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <c:choose>
+            <c:when test="${currentUserRole == 2}">
+                <a href='./admin.jsp'>admin</a>
+                <a href='./products.jsp'>all products</a>
+                <a href='./bands.jsp'>bands</a>
+                <a href='./genres.jsp'>genres</a>
+                <a href='./labels.jsp'>labels</a>
+            </c:when>
+            <c:when test="${currentUserRole == 1}">
+                <a href='./products.jsp'>all products</a>
+                <a href='./bands.jsp'>bands</a>
+                <a href='./genres.jsp'>genres</a>
+                <a href='./labels.jsp'>labels</a>
+            </c:when>
+        </c:choose>
     </body>
 </html>
