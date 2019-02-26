@@ -20,7 +20,7 @@
                 <a href="countriesAdmin.jsp">Countries</a>
                 <a href="labelsAdmin.jsp">Labels</a>
                 <a href="genresAdmin.jsp">Genres</a>
-                <a href="productsAdmin.jsp">Products</a>
+                <a href="itemsAdmin.jsp">Products</a>
                 <a href="usersAdmin.jsp">Users</a>
             </c:when>
             <c:otherwise>

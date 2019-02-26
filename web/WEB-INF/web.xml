@@ -4,9 +4,33 @@
         <servlet-name>Index</servlet-name>
         <servlet-class>servlets.Index</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LabelDetailServlet</servlet-name>
+        <servlet-class>servlets.LabelDetailServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>BandDetailServlet</servlet-name>
+        <servlet-class>servlets.BandDetailServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ItemDetailServlet</servlet-name>
+        <servlet-class>servlets.ItemDetailServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Index</servlet-name>
         <url-pattern>/Index</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LabelDetailServlet</servlet-name>
+        <url-pattern>/LabelDetailServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BandDetailServlet</servlet-name>
+        <url-pattern>/BandDetailServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ItemDetailServlet</servlet-name>
+        <url-pattern>/ItemDetailServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

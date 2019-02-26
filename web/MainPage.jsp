@@ -16,14 +16,13 @@
         <c:choose>
             <c:when test="${currentUserRole == 2}">
                 <a href='./admin.jsp'>admin</a>
-                <a href='./products.jsp'>all products</a>
+                <a href='./items.jsp'>all products</a>
                 <a href='./bands.jsp'>bands</a>
                 <a href='./genres.jsp'>genres</a>
                 <a href='./labels.jsp'>labels</a>
             </c:when>
             <c:when test="${currentUserRole == 1}">
-                <a href='./admin.jsp'>admin</a>
-                <a href='./products.jsp'>all products</a>
+                <a href='./items.jsp'>all products</a>
                 <a href='./bands.jsp'>bands</a>
                 <a href='./genres.jsp'>genres</a>
                 <a href='./labels.jsp'>labels</a>
