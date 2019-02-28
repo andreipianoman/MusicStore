@@ -35,10 +35,10 @@
         </sql:query>
         <c:forEach var="row" varStatus="loop" items="${currentBand.rows}">
             <img src="${row.image}"><br>
-            <span>Band site: </span><c:out value="${row.website}"/><br>
+            <a href="${row.website}">Visit band Website</a><br>
             <span>Genre: </span><c:out value="${row.genre}"/><br>
             <span>Country of Origin: </span><c:out value="${row.country}"/><br>
-            <span>Current Label: </span><c:out value="${row.label}"/><br>
+            <span>Current Label: </span><form action="${pageContext.request.contextPath}/LabelDetailServlet" method="GET"><input class="submitLink" type="submit" value="${row.label}" name="label"/></form><br>
         </c:forEach>
         <sql:query dataSource="${snapshot}" var="itemsFromBand">
             SELECT METAL.ITEMS.NAME AS ITEM, METAL.BANDS.NAME
@@ -49,7 +49,7 @@
         </sql:query>
             <h3>Available items from this band:</h3><br>
         <c:forEach var="itemRow" varStatus="loop" items="${itemsFromBand.rows}">
-            <c:out value="${itemRow.item}"/><br>
+            <form action="${pageContext.request.contextPath}/ItemDetailServlet" method="GET"><input class="submitLink" type="submit" value="${itemRow.item}" name="item"/></form><br>
         </c:forEach>
     </body>
 </html>

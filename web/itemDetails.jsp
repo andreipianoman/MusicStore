@@ -39,8 +39,8 @@
             <img src="${row.image}"><br>
             <span>Item type: </span><c:out value="${row.category}"/><br>
             <span>Price: </span><c:out value="${row.price}"/><br>
-            <span>Band: </span><c:out value="${row.band}"/><br>
-            <span>Label: </span><c:out value="${row.label}"/><br>
+            <span>Band: </span><form action="${pageContext.request.contextPath}/BandDetailServlet" method="GET"><input class="submitLink" type="submit" value="${row.band}" name="band"/></form><br><br>
+            <span>Label: </span><form action="${pageContext.request.contextPath}/LabelDetailServlet" method="GET"><input class="submitLink" type="submit" value="${row.label}" name="label"/></form><br><br>
         </c:forEach>
     </body>
 </html>
