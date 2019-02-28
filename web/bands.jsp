@@ -12,6 +12,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" type="text/css" href="./css/metalStore.css">
         <title>Bands page</title>
     </head>
     <body>
@@ -39,7 +40,7 @@
                 <tbody>
                     <c:forEach var="row" varStatus="loop" items="${bands.rows}">
                         <tr>
-                            <td><form action="${pageContext.request.contextPath}/BandDetailServlet" method="GET"><input type="submit" value="${row.name}" name="band"/></form></td>
+                            <td><form action="${pageContext.request.contextPath}/BandDetailServlet" method="GET"><input class="submitLink" type="submit" value="${row.name}" name="band"/></form></td>
                             <td><c:out value="${row.genre}"/></td>
                             <td><c:out value="${row.country}"/></td>
                         </tr>

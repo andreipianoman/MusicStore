@@ -12,6 +12,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" type="text/css" href="./css/metalStore.css">
         <title>Products page</title>
     </head>
     <body>
@@ -40,7 +41,7 @@
                 <tbody>
                     <c:forEach var="row" varStatus="loop" items="${items.rows}">
                         <tr>
-                            <td><form action="${pageContext.request.contextPath}/ItemDetailServlet" method="GET"><input type="submit" value="${row.name}" name="item"/></form></td>
+                            <td><form action="${pageContext.request.contextPath}/ItemDetailServlet" method="GET"><input class="submitLink" type="submit" value="${row.name}" name="item"/></form></td>
                             <td><c:out value="${row.price}"/></td>
                             <td><c:out value="${row.category}"/></td>
                             <td><img src="${row.image}"></td>
