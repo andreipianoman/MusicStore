@@ -12,9 +12,10 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="./css/metalStore.css">
+        <script type="text/javascript" src="./JavaScript/script.js"></script>
         <title>Item Details Page</title>
     </head>
-    <body>
+    <body onload="displayQuantityInput()">
         <h1>${item}</h1>
         <c:set var = "item" value ="${item}" />
         <sql:setDataSource 
@@ -35,12 +36,65 @@
             WHERE METAL.ITEMS.NAME=?
             <sql:param value = "${item}" />
         </sql:query>
+            
+        <sql:query dataSource="${snapshot}" var="sizes">
+            SELECT METAL.ITEMS.NAME AS ITEM, METAL.SHIRT_SIZES.SIZE AS SIZE, METAL.CLOTHING_SIZE_STOCKS.STOCK
+            FROM METAL.CLOTHING_SIZE_STOCKS
+            INNER JOIN METAL.ITEMS ON METAL.CLOTHING_SIZE_STOCKS.ITEM_ID=METAL.ITEMS.ID
+            INNER JOIN METAL.SHIRT_SIZES ON METAL.CLOTHING_SIZE_STOCKS.SIZE_ID=METAL.SHIRT_SIZES.ID
+            WHERE METAL.ITEMS.NAME=?
+            <sql:param value = "${item}" />
+        </sql:query>
+                    
+                    
         <c:forEach var="row" varStatus="loop" items="${currentItem.rows}">
             <img src="${row.image}"><br>
             <span>Item type: </span><c:out value="${row.category}"/><br>
             <span>Price: </span><c:out value="${row.price}"/><br>
             <span>Band: </span><form action="${pageContext.request.contextPath}/BandDetailServlet" method="GET"><input class="submitLink" type="submit" value="${row.band}" name="band"/></form><br><br>
             <span>Label: </span><form action="${pageContext.request.contextPath}/LabelDetailServlet" method="GET"><input class="submitLink" type="submit" value="${row.label}" name="label"/></form><br><br>
+            
+            <form action="${pageContext.request.contextPath}/AddToCartServlet" method="POST">
+                <c:choose>
+                    <c:when test="${row.category!='T-Shirt'}">
+                        <span>Quantity: </span><input type="number" max="${row.stock}" min="1" name="quantity"><br>
+                    </c:when>
+
+                    <c:when test="${row.category=='T-Shirt'}">
+                        <c:forEach var="rowSize" items="${sizes.rows}">
+                            <c:choose>
+                                <c:when test="${rowSize.stock!=0}">
+                                    <div id="quantity${rowSize.size}" class="hidden">
+                                        <span>Quantity: </span><input type="number" max="${rowSize.stock}" min="1" name="quantity"><br>
+                                    </div>
+                                </c:when>
+                            </c:choose>
+                        </c:forEach>
+                    </c:when>
+                </c:choose>
+
+
+                <c:choose>
+                    <c:when test="${row.category=='T-Shirt'}">
+                        <select id="selectSizes" name="size_options" required="true" onchange="updateQuantityInput()">
+                            <c:forEach var="rowSize" items="${sizes.rows}">
+                                <c:choose>
+                                    <c:when test="${rowSize.stock!=0}">
+                                        <option name="size" value="${rowSize.size}" name="size">${rowSize.size}</option>
+                                    </c:when>
+                                </c:choose>
+                            </c:forEach>
+                        </select>
+                    </c:when>
+                </c:choose>
+                        
+                <div id="dataForCart" class="hidden">
+                    <input type="text" name="name" value="${row.name}">
+                    <input type="number" name="price" step="0.01" value="${row.price}">
+                </div>
+                        
+                <input type="submit" value="Add to Cart">
+            </form>
         </c:forEach>
     </body>
 </html>

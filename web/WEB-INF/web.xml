@@ -16,6 +16,10 @@
         <servlet-name>ItemDetailServlet</servlet-name>
         <servlet-class>servlets.ItemDetailServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AddToCartServlet</servlet-name>
+        <servlet-class>servlets.AddToCartServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Index</servlet-name>
         <url-pattern>/Index</url-pattern>
@@ -31,6 +35,10 @@
     <servlet-mapping>
         <servlet-name>ItemDetailServlet</servlet-name>
         <url-pattern>/ItemDetailServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddToCartServlet</servlet-name>
+        <url-pattern>/AddToCartServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
