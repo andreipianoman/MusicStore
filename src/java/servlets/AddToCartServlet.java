@@ -55,12 +55,13 @@ public class AddToCartServlet extends HttpServlet {
         Double itemPrice = Double.parseDouble(request.getParameter("price"));
         String itemSize = request.getParameter("size_option");
         Integer itemQuantity = Integer.parseInt(request.getParameter("quantity"));
+        String itemImage = request.getParameter("imageAddress");
         
         if (!(itemCategory.equals("T-Shirt")) && !(itemCategory.equals("Girlie"))  && !(itemCategory.equals("Longsleeve")) && !(itemCategory.equals("Jacket/Hoodie")) && !(itemCategory.equals("Girlie Longsleeve"))) {
         
             if (request.getSession().getAttribute("cart") == null) {
                 ArrayList<CartItem> cart = new ArrayList<CartItem>();
-                CartItem cartItem = new CartItem(1, itemName, itemPrice * itemQuantity, itemQuantity, itemSize);
+                CartItem cartItem = new CartItem(1, itemName, itemPrice * itemQuantity, itemQuantity, itemSize, itemImage);
                 cart.add(cartItem);
                 request.getSession().setAttribute("cart", cart);
                 request.getSession().setAttribute("item", itemName);
@@ -80,7 +81,7 @@ public class AddToCartServlet extends HttpServlet {
                 }
 
                 if (found == false) {
-                    CartItem cartItem = new CartItem(cart.size() + 3, itemName, itemPrice * itemQuantity, itemQuantity, itemSize);
+                    CartItem cartItem = new CartItem(cart.size() + 3, itemName, itemPrice * itemQuantity, itemQuantity, itemSize, itemImage);
                     cart.add(cartItem);
                 }
                 request.getSession().setAttribute("cart", cart);
@@ -99,7 +100,7 @@ public class AddToCartServlet extends HttpServlet {
                 throw new SQLException();
             }
             
-            //request.getRequestDispatcher("./itemDetails.jsp").forward(request, response);
+            request.getRequestDispatcher("./itemDetails.jsp").forward(request, response);
             
         } else {
             
@@ -120,7 +121,7 @@ public class AddToCartServlet extends HttpServlet {
                 }
 
                 if (found == false) {
-                    CartItem cartItem = new CartItem(cart.size() + 3, itemName, itemPrice * itemQuantity, itemQuantity, itemSize);
+                    CartItem cartItem = new CartItem(cart.size() + 3, itemName, itemPrice * itemQuantity, itemQuantity, itemSize, itemImage);
                     cart.add(cartItem);
                 }
                 request.getSession().setAttribute("cart", cart);
@@ -128,7 +129,7 @@ public class AddToCartServlet extends HttpServlet {
                 
             } else {
                 ArrayList<CartItem> cart = new ArrayList<CartItem>();
-                CartItem cartItem = new CartItem(1, itemName, itemPrice * itemQuantity, itemQuantity, itemSize);
+                CartItem cartItem = new CartItem(1, itemName, itemPrice * itemQuantity, itemQuantity, itemSize, itemImage);
                 cart.add(cartItem);
                 request.getSession().setAttribute("cart", cart);
                 request.getSession().setAttribute("item", itemName);
@@ -155,7 +156,7 @@ public class AddToCartServlet extends HttpServlet {
                 throw new SQLException();
             }
             
-            //request.getRequestDispatcher("./itemDetails.jsp").forward(request, response);
+            request.getRequestDispatcher("./itemDetails.jsp").forward(request, response);
             
         }
         

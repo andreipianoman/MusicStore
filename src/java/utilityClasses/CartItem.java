@@ -15,13 +15,25 @@ public class CartItem {
     private double price;
     private int quantity;
     private String size;
+    private String image;
     
-    public CartItem(int ID, String name, double price, int stock, String size) {
+    public CartItem() {}
+    
+    public CartItem(int ID, String name, double price, int stock, String size, String image) {
         this.ID=ID;
         this.name = name;
         this.price = price;
         this.quantity = stock;
         this.size = size;
+        this.image = image;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getSize() {

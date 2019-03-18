@@ -59,7 +59,7 @@
                 <c:choose>
                     <c:when test="${row.category!='T-Shirt' && row.category!='Girlie' && row.category!='Longsleeve' && row.category!='Jacket/Hoodie' && row.category!='Girlie Longsleeve'}">
                         <span>Quantity: </span><input type="number" max="${row.stock}" min="0" name="quantity"><br>
-                        <input class="hidden" type="text" name="size" value="N/A">
+                        <input class="hidden" type="text" name="size_option" value="N/A">
                         <input class="hidden" type="text" name="id" value="${row.id}">
                     </c:when>
 
@@ -96,6 +96,7 @@
                     <input type="text" name="name" value="${row.name}">
                     <input type="text" name="category" value="${row.category}">
                     <input type="number" name="price" step="0.01" value="${row.price}">
+                    <input type="text" name="imageAddress" value="${row.image}">
                 </div>
                         
                 <input type="submit" value="Add to Cart">

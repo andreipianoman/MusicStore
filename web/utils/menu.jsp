@@ -20,11 +20,13 @@
                 <a href='./items.jsp'>all products</a>
                 <a href='./bands.jsp'>bands</a>
                 <a href='./labels.jsp'>labels</a>
+                <a href='./cart.jsp'>cart</a>
             </c:when>
             <c:when test="${currentUserRole == 1}">
                 <a href='./items.jsp'>all products</a>
                 <a href='./bands.jsp'>bands</a>
                 <a href='./labels.jsp'>labels</a>
+                <a href='./cart.jsp'>cart</a>
             </c:when>
         </c:choose>
     </body>

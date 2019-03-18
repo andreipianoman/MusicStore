@@ -4,6 +4,8 @@
     Author     : Turbotwins
 --%>
 
+<%@page import="java.util.ArrayList"%>
+<%@page import="utilityClasses.CartItem"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -13,20 +15,33 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <jsp:useBean id="cart" type = "java.util.ArrayList" scope="session" ></jsp:useBean>
         <%@ include file="./utils/menu.jsp" %>
-        
+        <table border="1">
+            <thead>
+                <tr>
+                    <td class="cartTableCenter ">Item</td>
+                    <td class="cartTableCenter ">Quantity</td>
+                    <td class="cartTableCenter ">Price</td>
+                    <td class="cartTableCenter ">Size</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <c:set var="total" value="0" scope="page" />
+            <tbody>
+                <c:forEach items="${cart}" var="item">
+                <tr>
+                    <td class="cartTableCenter "><span>${item.name}</span></td>
+                    <td class="cartTableCenter "><span>${item.quantity}</span></td>
+                    <td class="cartTableCenter "><span>${item.price}</span></td>
+                    <td class="cartTableCenter "><span>${item.size}</span></td>
+                    <td class="cartTableCenter "><img class = "cartImage" src="${item.image}"></td>
+                </tr>
+                <c:set var="total" value="${total + item.price}" scope="page" />
+                </c:forEach>
+            </tbody>
+        </table>
         <br>
-        
-        <h1>ID: ${cart[0].getID()}</h1>
-        <h1>Name: ${cart[0].getName()}</h1>
-        <h1>Price: ${cart[0].getPrice()}</h1>
-        <h1>Quantity: ${cart[0].getQuantity()}</h1>
-        
-        <br>
-        
-        <h1>ID: ${cart[1].getID()}</h1>
-        <h1>Name: ${cart[1].getName()}</h1>
-        <h1>Price: ${cart[1].getPrice()}</h1>
-        <h1>Quantity: ${cart[1].getQuantity()}</h1>
+        <span>Total price: ${total}</span>
     </body>
 </html>

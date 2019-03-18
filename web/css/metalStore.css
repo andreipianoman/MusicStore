@@ -8,3 +8,13 @@
   color: blue;
   cursor: pointer;
 }
+
+.cartImage {
+    height: 75px;
+    width: auto;
+}
+
+.cartTableCenter {
+    text-align: center; 
+    vertical-align: middle;
+}
