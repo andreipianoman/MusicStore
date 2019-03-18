@@ -15,6 +15,7 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <%@ include file="./utils/menu.jsp" %>
         <h1>${label}</h1>
         <c:set var = "label" value ="${label}" />
         <sql:setDataSource 

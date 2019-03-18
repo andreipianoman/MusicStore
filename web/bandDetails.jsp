@@ -15,6 +15,7 @@
         <title>Band Details Page</title>
     </head>
     <body>
+        <%@ include file="./utils/menu.jsp" %>
         <h1>${band}</h1>
         <c:set var = "band" value ="${band}" />
         <sql:setDataSource 

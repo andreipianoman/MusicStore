@@ -16,6 +16,7 @@
         <title>Item Details Page</title>
     </head>
     <body onload="displayQuantityInput()">
+        <%@ include file="./utils/menu.jsp" %>
         <h1>${item}</h1>
         <c:set var = "item" value ="${item}" />
         <sql:setDataSource 

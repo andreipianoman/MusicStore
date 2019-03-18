@@ -16,7 +16,8 @@
         <title>Products page</title>
     </head>
     <body>
-        <h1>Products Page</h1>
+        <%@ include file="./utils/menu.jsp" %>
+        <h1>Items Page</h1>
         <sql:setDataSource 
         var="snapshot" 
         driver="org.apache.derby.jdbc.ClientDriver"

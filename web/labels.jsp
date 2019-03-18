@@ -16,6 +16,7 @@
         <title>Labels page</title>
     </head>
     <body>
+        <%@ include file="./utils/menu.jsp" %>
         <h1>Labels Page</h1>
         <sql:setDataSource 
         var="snapshot" 

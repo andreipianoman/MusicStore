@@ -13,6 +13,7 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <%@ include file="./utils/menu.jsp" %>
         
         <br>
         
