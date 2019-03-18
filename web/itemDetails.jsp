@@ -25,7 +25,7 @@
         user="metal"  
         password="metal"/>
         <sql:query dataSource="${snapshot}" var="currentItem">
-            SELECT METAL.ITEMS.NAME, METAL.ITEMS.PRICE, METAL.ITEMS.STOCK, METAL.CATEGORIES.NAME AS CATEGORY, METAL.IMAGES.ADDRESS AS IMAGE,
+            SELECT METAL.ITEMS.ID, METAL.ITEMS.NAME, METAL.ITEMS.PRICE, METAL.ITEMS.STOCK, METAL.CATEGORIES.NAME AS CATEGORY, METAL.IMAGES.ADDRESS AS IMAGE,
             METAL.BANDS.NAME AS BAND, METAL.GENRES.NAME AS GENRE, METAL.LABELS.NAME AS LABEL
             FROM METAL.ITEMS
             INNER JOIN METAL.CATEGORIES ON METAL.ITEMS.CATEGORY_ID=METAL.CATEGORIES.ID
@@ -56,17 +56,20 @@
             
             <form action="${pageContext.request.contextPath}/AddToCartServlet" method="POST">
                 <c:choose>
-                    <c:when test="${row.category!='T-Shirt'}">
-                        <span>Quantity: </span><input type="number" max="${row.stock}" min="1" name="quantity"><br>
+                    <c:when test="${row.category!='T-Shirt' && row.category!='Girlie' && row.category!='Longsleeve' && row.category!='Jacket/Hoodie' && row.category!='Girlie Longsleeve'}">
+                        <span>Quantity: </span><input type="number" max="${row.stock}" min="0" name="quantity"><br>
+                        <input class="hidden" type="text" name="size" value="N/A">
+                        <input class="hidden" type="text" name="id" value="${row.id}">
                     </c:when>
 
-                    <c:when test="${row.category=='T-Shirt'}">
+                    <c:when test="${row.category=='T-Shirt' || row.category=='Girlie' || row.category=='Longsleeve' || row.category=='Jacket/Hoodie' || row.category=='Girlie Longsleeve'}">
                         <c:forEach var="rowSize" items="${sizes.rows}">
                             <c:choose>
                                 <c:when test="${rowSize.stock!=0}">
                                     <div id="quantity${rowSize.size}" class="hidden">
-                                        <span>Quantity: </span><input type="number" max="${rowSize.stock}" min="1" name="quantity"><br>
+                                        <span>Quantity: ${rowSize.size}</span><input type="number" max="${rowSize.stock}" min="0" name="quantity"><br>
                                     </div>
+                                    <input class="hidden" type="text" name="id" value="${row.id}">
                                 </c:when>
                             </c:choose>
                         </c:forEach>
@@ -75,8 +78,8 @@
 
 
                 <c:choose>
-                    <c:when test="${row.category=='T-Shirt'}">
-                        <select id="selectSizes" name="size_options" required="true" onchange="updateQuantityInput()">
+                    <c:when test="${row.category=='T-Shirt' || row.category=='Girlie' || row.category=='Longsleeve' || row.category=='Jacket/Hoodie' || row.category=='Girlie Longsleeve'}">
+                        <select id="selectSizes" name="size_option" required="true" onchange="updateQuantityInput()">
                             <c:forEach var="rowSize" items="${sizes.rows}">
                                 <c:choose>
                                     <c:when test="${rowSize.stock!=0}">
@@ -90,6 +93,7 @@
                         
                 <div id="dataForCart" class="hidden">
                     <input type="text" name="name" value="${row.name}">
+                    <input type="text" name="category" value="${row.category}">
                     <input type="number" name="price" step="0.01" value="${row.price}">
                 </div>
                         

@@ -14,7 +14,6 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Admin Page</h1>
         <c:choose>
             <c:when test="${currentUserRole == 2}">
                 <a href="bandsAdmin.jsp">Bands</a>
@@ -23,6 +22,7 @@
                 <a href="genresAdmin.jsp">Genres</a>
                 <a href="itemsAdmin.jsp">Products</a>
                 <a href="usersAdmin.jsp">Users</a>
+                <a href="MainPage.jsp">Main Page</a>
             </c:when>
             <c:otherwise>
                 <span>You don't have admin rights. Go to the login page </span><a href='Index.jsp'>here</a><span>.</span><br>

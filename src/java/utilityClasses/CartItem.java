@@ -13,13 +13,23 @@ public class CartItem {
     private int ID;
     private String name;
     private double price;
-    private int stock;
+    private int quantity;
+    private String size;
     
-    public CartItem(int ID, String name, double price, int stock) {
+    public CartItem(int ID, String name, double price, int stock, String size) {
         this.ID=ID;
         this.name = name;
         this.price = price;
-        this.stock = stock;
+        this.quantity = stock;
+        this.size = size;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 
     public int getID() {
@@ -46,11 +56,11 @@ public class CartItem {
         this.price = price;
     }
 
-    public int getStock() {
-        return stock;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setStock(int stock) {
-        this.stock = stock;
+    public void setQuantity(int stock) {
+        this.quantity = stock;
     }
 }
