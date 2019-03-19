@@ -142,10 +142,9 @@ public class AddToCartServlet extends HttpServlet {
                 String itemStockQuery = "SELECT METAL.ITEMS.STOCK FROM METAL.ITEMS WHERE METAL.ITEMS.NAME = '" + itemName + "'";
                 String updateItemStock = "UPDATE METAL.ITEMS SET METAL.ITEMS.STOCK = (" + itemStockQuery + ") - " + itemQuantity + " WHERE METAL.ITEMS.NAME = '" + itemName + "'";
                 
-                String sizeIDQuery = "SELECT METAL.SHIRT_SIZES.ID FROM METAL.SHIRT_SIZES WHERE METAL.SHIRT_SIZES.SIZE = '" + itemSize + "'";
+                String sizeIDQuery = "SELECT METAL.SIZES.ID FROM METAL.SIZES WHERE METAL.SIZES.SIZE = '" + itemSize + "'";
                 String itemSizeStockQuery = "SELECT METAL.CLOTHING_SIZE_STOCKS.STOCK FROM METAL.CLOTHING_SIZE_STOCKS WHERE CLOTHING_SIZE_STOCKS.ITEM_ID = " + itemID + " AND METAL.CLOTHING_SIZE_STOCKS.SIZE_ID = (" + sizeIDQuery + ")";
                 String updateItemSizeStock = "UPDATE METAL.CLOTHING_SIZE_STOCKS SET METAL.CLOTHING_SIZE_STOCKS.STOCK = (" + itemSizeStockQuery + ") - " + itemQuantity + " WHERE ITEM_ID = " + itemID + " AND SIZE_ID = (" + sizeIDQuery + ")";
-                //String updateItemSizeStock = "UPDATE METAL.CLOTHING_SIZE_STOCKS SET METAL.CLOTHING_SIZE_STOCKS.STOCK = 10 - 3 WHERE ITEM_ID = 2 AND SIZE_ID = (SELECT METAL.SHIRT_SIZES.ID FROM METAL.SHIRT_SIZES WHERE METAL.SHIRT_SIZES.SIZE = 'XS')";
                 
                 pstmnt = connection.prepareStatement(updateItemStock);
                 pstmntSize = connection.prepareStatement(updateItemSizeStock);

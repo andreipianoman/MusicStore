@@ -43,5 +43,9 @@
         </table>
         <br>
         <span>Total price: ${total}</span>
+        <br>
+        <form action="${pageContext.request.contextPath}/CheckoutServlet" method="POST"">
+            <input type="submit" value="Checkout">
+        </form>
     </body>
 </html>
