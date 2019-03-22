@@ -14,8 +14,17 @@
         <link rel="stylesheet" type="text/css" href="./css/metalStore.css">
         <title>JSP Page</title>
     </head>
+    
+    <sql:query dataSource="${snapshot}" var="cart">
+        SELECT METAL.ITEMS.NAME, METAL.CART_ITEMS.QUANTITY, METAL.CART_ITEMS.PRICE, METAL.SIZES.SIZE AS SIZE
+        FROM CART_ITEMS
+        INNER JOIN METAL.ITEMS ON METAL.CART_ITEMS.ITEM_ID=METAL.ITEMS.ID
+        INNER JOIN METAL.SIZES ON METAL.CART_ITEMS.SIZE_ID=METAL.SIZES.ID
+        WHERE METAL.CART_ITEMS.USER_ID=?
+        <sql:param value = "${user}" />
+    </sql:query>
+    
     <body>
-        <jsp:useBean id="cart" type = "java.util.ArrayList" scope="session" ></jsp:useBean>
         <%@ include file="./utils/menu.jsp" %>
         <table border="1">
             <thead>

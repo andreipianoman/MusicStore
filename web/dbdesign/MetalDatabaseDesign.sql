@@ -22,7 +22,7 @@ create table METAL.CLOTHING_SIZE_STOCKS(ID integer primary key, ITEM_ID integer,
 create table METAL.LABELS (ID integer primary key, NAME varchar(100), WEBSITE varchar(10000), COUNTRY_ID integer, IMAGE_ID integer);
 create table METAL.ROLES(ID  integer primary key, NAME varchar(100));
 create table METAL.USERS(ID  integer primary key, USERNAME varchar(100), PASSWORD varchar(25), ROLE_ID integer);
-create table METAL.CART_ITEMS(ID integer primary key, ITEM_ID integer, QUANTITY integer, SIZE_ID integer, USER_ID integer);
+create table METAL.CART_ITEMS(ID integer primary key, ITEM_ID integer, QUANTITY integer, PRICE double, SIZE_ID integer, USER_ID integer);
 
 ALTER TABLE METAL.USERS ADD FOREIGN KEY (ROLE_ID) REFERENCES METAL.ROLES (ID);
 ALTER TABLE METAL.LABELS ADD FOREIGN KEY (COUNTRY_ID) REFERENCES METAL.COUNTRIES (ID);

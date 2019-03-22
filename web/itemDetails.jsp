@@ -58,7 +58,7 @@
             <form action="${pageContext.request.contextPath}/AddToCartServlet" method="POST">
                 <c:choose>
                     <c:when test="${row.category!='T-Shirt' && row.category!='Girlie' && row.category!='Longsleeve' && row.category!='Jacket/Hoodie' && row.category!='Girlie Longsleeve'}">
-                        <span>Quantity: </span><input type="number" max="${row.stock}" min="0" name="quantityN/A"><br>
+                        <span>Quantity: </span><input value="1" type="number" max="${row.stock}" min="1" name="quantityN/A"><br>
                         <input class="hidden" type="text" name="size_option" value="N/A">
                         <input class="hidden" type="text" name="id" value="${row.id}">
                     </c:when>
@@ -68,7 +68,7 @@
                             <c:choose>
                                 <c:when test="${rowSize.stock!=0}">
                                     <div id="quantity${rowSize.size}" class="hidden">
-                                        <span>Quantity: ${rowSize.size}</span><input type="number" max="${rowSize.stock}" min="0" name="quantity${rowSize.size}"><br>
+                                        <span>Quantity: ${rowSize.size}</span><input value="1" type="number" max="${rowSize.stock}" min="1" name="quantity${rowSize.size}"><br>
                                     </div>
                                     <input class="hidden" type="text" name="id" value="${row.id}">
                                 </c:when>

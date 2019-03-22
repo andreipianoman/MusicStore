@@ -43,6 +43,7 @@ public class AddToCartServlet extends HttpServlet {
         PreparedStatement pstmntSize;
         PreparedStatement pstmntAddToCart;
         PreparedStatement pstmntUpdateCartQuantity;
+        PreparedStatement pstmntUpdateCartPrice;
         Statement statement;
         Statement sizeStatement;
         Statement userStatement;
@@ -55,9 +56,9 @@ public class AddToCartServlet extends HttpServlet {
         String itemID = request.getParameter("id");
         String itemName = request.getParameter("name");
         String itemCategory = request.getParameter("category");
-        Double itemPrice = Double.parseDouble(request.getParameter("price"));
         String itemSize = request.getParameter("size_option");
         Integer itemQuantity = Integer.parseInt(request.getParameter("quantity" + itemSize));
+        Double itemPrice = Double.parseDouble(request.getParameter("price")) * itemQuantity;
         String itemImage = request.getParameter("imageAddress");
         
         request.getSession().setAttribute("item", itemName);
@@ -94,11 +95,16 @@ public class AddToCartServlet extends HttpServlet {
                 boolean foundItemResultSetHasRows = foundItemResultSet.next();
                 if (foundItemResultSetHasRows) {
                     
-                    // Update quantity in CART_ITEMS table
+                    // Update quantity and price in CART_ITEMS table
                     String cartItemQuantityQuery = "SELECT CART_ITEMS.QUANTITY FROM CART_ITEMS WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
                     String updateItemQuantity = "UPDATE METAL.CART_ITEMS SET METAL.CART_ITEMS.QUANTITY = (" + cartItemQuantityQuery + ") + " + itemQuantity + " WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
                     pstmntUpdateCartQuantity = connection.prepareStatement(updateItemQuantity);
                     pstmntUpdateCartQuantity.execute();
+                    
+                    String cartItemPriceQuery = "SELECT CART_ITEMS.PRICE FROM CART_ITEMS WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
+                    String updateItemPrice = "UPDATE METAL.CART_ITEMS SET METAL.CART_ITEMS.PRICE = (" + cartItemPriceQuery + ") + " + itemPrice + " WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
+                    pstmntUpdateCartPrice = connection.prepareStatement(updateItemPrice);
+                    pstmntUpdateCartPrice.execute();
                     
                 } else {
                     
@@ -118,13 +124,14 @@ public class AddToCartServlet extends HttpServlet {
                     }
 
                     //Add to CART_ITEMS table with found id
-                    String addToCart = "INSERT INTO METAL.CART_ITEMS (ID, ITEM_ID, QUANTITY, SIZE_ID, USER_ID) VALUES (?, ?, ?, ?, ?)";
+                    String addToCart = "INSERT INTO METAL.CART_ITEMS (ID, ITEM_ID, QUANTITY, PRICE, SIZE_ID, USER_ID) VALUES (?, ?, ?, ?, ?, ?)";
                     pstmntAddToCart = connection.prepareStatement(addToCart);
                     pstmntAddToCart.setInt(1, count_id);
                     pstmntAddToCart.setString(2, itemID);
                     pstmntAddToCart.setInt(3, itemQuantity);
-                    pstmntAddToCart.setInt(4, sizeID);
-                    pstmntAddToCart.setInt(5, userID);
+                    pstmntAddToCart.setDouble(4, itemPrice);
+                    pstmntAddToCart.setInt(5, sizeID);
+                    pstmntAddToCart.setInt(6, userID);
                     pstmntAddToCart.execute();
                     
                 }
@@ -172,11 +179,16 @@ public class AddToCartServlet extends HttpServlet {
                 boolean foundItemResultSetHasRows = foundItemResultSet.next();
                 if (foundItemResultSetHasRows) {
                     
-                    // Update quantity in CART_ITEMS table
+                    // Update quantity and price in CART_ITEMS table
                     String cartItemQuantityQuery = "SELECT CART_ITEMS.QUANTITY FROM CART_ITEMS WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
                     String updateItemQuantity = "UPDATE METAL.CART_ITEMS SET METAL.CART_ITEMS.QUANTITY = (" + cartItemQuantityQuery + ") + " + itemQuantity + " WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
                     pstmntUpdateCartQuantity = connection.prepareStatement(updateItemQuantity);
                     pstmntUpdateCartQuantity.execute();
+                    
+                    String cartItemPriceQuery = "SELECT CART_ITEMS.PRICE FROM CART_ITEMS WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
+                    String updateItemPrice = "UPDATE METAL.CART_ITEMS SET METAL.CART_ITEMS.PRICE = (" + cartItemPriceQuery + ") + " + itemPrice + " WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
+                    pstmntUpdateCartPrice = connection.prepareStatement(updateItemPrice);
+                    pstmntUpdateCartPrice.execute();
                     
                 } else {
                     
@@ -196,13 +208,14 @@ public class AddToCartServlet extends HttpServlet {
                     }
 
                     //Add to CART_ITEMS table with found id
-                    String addToCart = "INSERT INTO METAL.CART_ITEMS (ID, ITEM_ID, QUANTITY, SIZE_ID, USER_ID) VALUES (?, ?, ?, ?, ?)";
+                    String addToCart = "INSERT INTO METAL.CART_ITEMS (ID, ITEM_ID, QUANTITY, PRICE, SIZE_ID, USER_ID) VALUES (?, ?, ?, ?, ?, ?)";
                     pstmntAddToCart = connection.prepareStatement(addToCart);
                     pstmntAddToCart.setInt(1, count_id);
                     pstmntAddToCart.setString(2, itemID);
                     pstmntAddToCart.setInt(3, itemQuantity);
-                    pstmntAddToCart.setInt(4, sizeID);
-                    pstmntAddToCart.setInt(5, userID);
+                    pstmntAddToCart.setDouble(4, itemPrice);
+                    pstmntAddToCart.setInt(5, sizeID);
+                    pstmntAddToCart.setInt(6, userID);
                     pstmntAddToCart.execute();
                 
                 }
