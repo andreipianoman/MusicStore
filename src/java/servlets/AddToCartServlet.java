@@ -6,21 +6,18 @@
 package servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import utilityClasses.CartItem;
 
 /**
  *
@@ -41,9 +38,15 @@ public class AddToCartServlet extends HttpServlet {
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         
-        Connection connection = null;
-        PreparedStatement pstmnt = null;
-        PreparedStatement pstmntSize = null;
+        Connection connection;
+        PreparedStatement pstmnt;
+        PreparedStatement pstmntSize;
+        PreparedStatement pstmntAddToCart;
+        PreparedStatement pstmntUpdateCartQuantity;
+        Statement statement;
+        Statement sizeStatement;
+        Statement userStatement;
+        Statement searchItemStatement;
         String user = "metal";
         String password = "metal";
         String url = "jdbc:derby://localhost:1527/metal;create=true";
@@ -54,109 +57,171 @@ public class AddToCartServlet extends HttpServlet {
         String itemCategory = request.getParameter("category");
         Double itemPrice = Double.parseDouble(request.getParameter("price"));
         String itemSize = request.getParameter("size_option");
-        Integer itemQuantity = Integer.parseInt(request.getParameter("quantity"));
+        Integer itemQuantity = Integer.parseInt(request.getParameter("quantity" + itemSize));
         String itemImage = request.getParameter("imageAddress");
         
+        request.getSession().setAttribute("item", itemName);
+            
         if (!(itemCategory.equals("T-Shirt")) && !(itemCategory.equals("Girlie"))  && !(itemCategory.equals("Longsleeve")) && !(itemCategory.equals("Jacket/Hoodie")) && !(itemCategory.equals("Girlie Longsleeve"))) {
-        
-            if (request.getSession().getAttribute("cart") == null) {
-                ArrayList<CartItem> cart = new ArrayList<CartItem>();
-                CartItem cartItem = new CartItem(1, itemName, itemPrice * itemQuantity, itemQuantity, itemSize, itemImage);
-                cart.add(cartItem);
-                request.getSession().setAttribute("cart", cart);
-                request.getSession().setAttribute("item", itemName);
-            } else {
-                ArrayList<CartItem> cart = (ArrayList) request.getSession().getAttribute("cart");
-
-                boolean found = false;
-                for (CartItem x : cart) {
-                    if (x.getName().equals(itemName)) {
-                        x.setQuantity(x.getQuantity() + itemQuantity);
-                        x.setPrice(x.getQuantity() * itemPrice);
-                        found = true;
-                        break;
-                    } else {
-                        continue;
-                    }
-                }
-
-                if (found == false) {
-                    CartItem cartItem = new CartItem(cart.size() + 3, itemName, itemPrice * itemQuantity, itemQuantity, itemSize, itemImage);
-                    cart.add(cartItem);
-                }
-                request.getSession().setAttribute("cart", cart);
-                request.getSession().setAttribute("item", itemName);
-            }
-
-            try
-            {
+            
+            try{
                 Class driverClass = Class.forName(driver);
                 connection = DriverManager.getConnection(url, user, password);
-                String DML = "UPDATE METAL.ITEMS SET METAL.ITEMS.STOCK = (SELECT METAL.ITEMS.STOCK FROM METAL.ITEMS WHERE METAL.ITEMS.NAME = '" + itemName + "') - " + itemQuantity + " WHERE METAL.ITEMS.NAME = '" + itemName + "'";
-                pstmnt = connection.prepareStatement(DML);
+                
+                //Get Size id
+                String sizeIDQuery = "SELECT METAL.SIZES.ID FROM METAL.SIZES WHERE METAL.SIZES.SIZE = '" + itemSize + "'";
+                sizeStatement = connection.createStatement();
+                ResultSet resultSetSizeID = sizeStatement.executeQuery(sizeIDQuery);
+                Integer sizeID = null;
+                if (resultSetSizeID.next()) {
+                    sizeID = ((Integer) resultSetSizeID.getObject(1));
+                }
+                
+                //Get User id
+                String username = (String) request.getSession().getAttribute("currentUser");
+                String userIDQuery = "SELECT METAL.USERS.ID FROM METAL.USERS WHERE METAL.USERS.USERNAME = '" + username + "'";
+                userStatement = connection.createStatement();
+                ResultSet resultSetUserID = userStatement.executeQuery(userIDQuery);
+                Integer userID = null;
+                if (resultSetUserID.next()) {
+                    userID = ((Integer) resultSetUserID.getObject(1));
+                }
+                
+                //Check if the item is already in cart
+                String searchItemQuery = "SELECT * FROM CART_ITEMS WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
+                searchItemStatement = connection.createStatement();
+                ResultSet foundItemResultSet = searchItemStatement.executeQuery(searchItemQuery);
+                boolean foundItemResultSetHasRows = foundItemResultSet.next();
+                if (foundItemResultSetHasRows) {
+                    
+                    // Update quantity in CART_ITEMS table
+                    String cartItemQuantityQuery = "SELECT CART_ITEMS.QUANTITY FROM CART_ITEMS WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
+                    String updateItemQuantity = "UPDATE METAL.CART_ITEMS SET METAL.CART_ITEMS.QUANTITY = (" + cartItemQuantityQuery + ") + " + itemQuantity + " WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
+                    pstmntUpdateCartQuantity = connection.prepareStatement(updateItemQuantity);
+                    pstmntUpdateCartQuantity.execute();
+                    
+                } else {
+                    
+                    //Find smallest unused id in CART_ITEMS
+                    Integer count_id = 1;
+                    while (true) {
+                        String query = "SELECT * FROM CART_ITEMS WHERE ID = " + count_id;
+                        statement = connection.createStatement();
+                        ResultSet resultSet = statement.executeQuery(query);
+                        boolean resultSetHasRows = resultSet.next();
+                        if (resultSetHasRows) {
+                            count_id = count_id + 1;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+
+                    //Add to CART_ITEMS table with found id
+                    String addToCart = "INSERT INTO METAL.CART_ITEMS (ID, ITEM_ID, QUANTITY, SIZE_ID, USER_ID) VALUES (?, ?, ?, ?, ?)";
+                    pstmntAddToCart = connection.prepareStatement(addToCart);
+                    pstmntAddToCart.setInt(1, count_id);
+                    pstmntAddToCart.setString(2, itemID);
+                    pstmntAddToCart.setInt(3, itemQuantity);
+                    pstmntAddToCart.setInt(4, sizeID);
+                    pstmntAddToCart.setInt(5, userID);
+                    pstmntAddToCart.execute();
+                    
+                }
+                //Update item stock
+                String updateItemStock = "UPDATE METAL.ITEMS SET METAL.ITEMS.STOCK = (SELECT METAL.ITEMS.STOCK FROM METAL.ITEMS WHERE METAL.ITEMS.NAME = '" + itemName + "') - " + itemQuantity + " WHERE METAL.ITEMS.NAME = '" + itemName + "'";
+                pstmnt = connection.prepareStatement(updateItemStock);
                 pstmnt.execute();
+                    
+                request.getRequestDispatcher("./itemDetails.jsp").forward(request, response);
+            
             } catch (ClassNotFoundException | SQLException e) {
                 Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, e);
                 throw new SQLException();
             }
             
-            request.getRequestDispatcher("./itemDetails.jsp").forward(request, response);
-            
         } else {
-            
-            if (null != request.getSession().getAttribute("cart")) {
-                
-                ArrayList<CartItem> cart = (ArrayList) request.getSession().getAttribute("cart");
 
-                boolean found = false;
-                for (CartItem x : cart) {
-                    if (x.getName().equals(itemName) && x.getSize().equals(itemSize)) {
-                        x.setQuantity(x.getQuantity() + itemQuantity);
-                        x.setPrice(x.getQuantity() * itemPrice);
-                        found = true;
-                        break;
-                    } else {
-                        continue;
-                    }
-                }
-
-                if (found == false) {
-                    CartItem cartItem = new CartItem(cart.size() + 3, itemName, itemPrice * itemQuantity, itemQuantity, itemSize, itemImage);
-                    cart.add(cartItem);
-                }
-                request.getSession().setAttribute("cart", cart);
-                request.getSession().setAttribute("item", itemName);
-                
-            } else {
-                ArrayList<CartItem> cart = new ArrayList<CartItem>();
-                CartItem cartItem = new CartItem(1, itemName, itemPrice * itemQuantity, itemQuantity, itemSize, itemImage);
-                cart.add(cartItem);
-                request.getSession().setAttribute("cart", cart);
-                request.getSession().setAttribute("item", itemName);
-            }
-
-            try
-            {
+            try{
                 Class driverClass = Class.forName(driver);
                 connection = DriverManager.getConnection(url, user, password);
+                
+                //Get Size id
+                String sizeIDQuery = "SELECT METAL.SIZES.ID FROM METAL.SIZES WHERE METAL.SIZES.SIZE = '" + itemSize + "'";
+                sizeStatement = connection.createStatement();
+                ResultSet resultSetSizeID = sizeStatement.executeQuery(sizeIDQuery);
+                Integer sizeID = null;
+                if (resultSetSizeID.next()) {
+                    sizeID = ((Integer) resultSetSizeID.getObject(1));
+                }
+                
+                //Get User id
+                String username = (String) request.getSession().getAttribute("currentUser");
+                String userIDQuery = "SELECT METAL.USERS.ID FROM METAL.USERS WHERE METAL.USERS.USERNAME = '" + username + "'";
+                userStatement = connection.createStatement();
+                ResultSet resultSetUserID = userStatement.executeQuery(userIDQuery);
+                Integer userID = null;
+                if (resultSetUserID.next()) {
+                    userID = ((Integer) resultSetUserID.getObject(1));
+                }
+                
+                //Check if the item is already in cart
+                String searchItemQuery = "SELECT * FROM CART_ITEMS WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
+                searchItemStatement = connection.createStatement();
+                ResultSet foundItemResultSet = searchItemStatement.executeQuery(searchItemQuery);
+                boolean foundItemResultSetHasRows = foundItemResultSet.next();
+                if (foundItemResultSetHasRows) {
+                    
+                    // Update quantity in CART_ITEMS table
+                    String cartItemQuantityQuery = "SELECT CART_ITEMS.QUANTITY FROM CART_ITEMS WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
+                    String updateItemQuantity = "UPDATE METAL.CART_ITEMS SET METAL.CART_ITEMS.QUANTITY = (" + cartItemQuantityQuery + ") + " + itemQuantity + " WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
+                    pstmntUpdateCartQuantity = connection.prepareStatement(updateItemQuantity);
+                    pstmntUpdateCartQuantity.execute();
+                    
+                } else {
+                    
+                    //Find smallest unused id in CART_ITEMS
+                    Integer count_id = 1;
+                    while (true) {
+                        String query = "SELECT * FROM CART_ITEMS WHERE ID = " + count_id;
+                        statement = connection.createStatement();
+                        ResultSet resultSet = statement.executeQuery(query);
+                        boolean resultSetHasRows = resultSet.next();
+                        if (resultSetHasRows) {
+                            count_id = count_id + 1;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+
+                    //Add to CART_ITEMS table with found id
+                    String addToCart = "INSERT INTO METAL.CART_ITEMS (ID, ITEM_ID, QUANTITY, SIZE_ID, USER_ID) VALUES (?, ?, ?, ?, ?)";
+                    pstmntAddToCart = connection.prepareStatement(addToCart);
+                    pstmntAddToCart.setInt(1, count_id);
+                    pstmntAddToCart.setString(2, itemID);
+                    pstmntAddToCart.setInt(3, itemQuantity);
+                    pstmntAddToCart.setInt(4, sizeID);
+                    pstmntAddToCart.setInt(5, userID);
+                    pstmntAddToCart.execute();
+                
+                }
+                //Update item stock and size stock
                 String itemStockQuery = "SELECT METAL.ITEMS.STOCK FROM METAL.ITEMS WHERE METAL.ITEMS.NAME = '" + itemName + "'";
                 String updateItemStock = "UPDATE METAL.ITEMS SET METAL.ITEMS.STOCK = (" + itemStockQuery + ") - " + itemQuantity + " WHERE METAL.ITEMS.NAME = '" + itemName + "'";
-                
-                String sizeIDQuery = "SELECT METAL.SIZES.ID FROM METAL.SIZES WHERE METAL.SIZES.SIZE = '" + itemSize + "'";
+
                 String itemSizeStockQuery = "SELECT METAL.CLOTHING_SIZE_STOCKS.STOCK FROM METAL.CLOTHING_SIZE_STOCKS WHERE CLOTHING_SIZE_STOCKS.ITEM_ID = " + itemID + " AND METAL.CLOTHING_SIZE_STOCKS.SIZE_ID = (" + sizeIDQuery + ")";
                 String updateItemSizeStock = "UPDATE METAL.CLOTHING_SIZE_STOCKS SET METAL.CLOTHING_SIZE_STOCKS.STOCK = (" + itemSizeStockQuery + ") - " + itemQuantity + " WHERE ITEM_ID = " + itemID + " AND SIZE_ID = (" + sizeIDQuery + ")";
-                
                 pstmnt = connection.prepareStatement(updateItemStock);
                 pstmntSize = connection.prepareStatement(updateItemSizeStock);
                 pstmntSize.execute();
                 pstmnt.execute();
+                request.getRequestDispatcher("./itemDetails.jsp").forward(request, response);
+            
             } catch (ClassNotFoundException | SQLException e) {
                 Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, e);
                 throw new SQLException();
             }
-            
-            request.getRequestDispatcher("./itemDetails.jsp").forward(request, response);
-            
         }
         
             

@@ -38,22 +38,18 @@ function updateQuantityInput() {
     if (document.getElementById("quantityXS")) {
         document.getElementById("quantityXS").classList.add("hidden");
     }
-    
     if (document.getElementById("quantityS")) {
         document.getElementById("quantityS").classList.add("hidden");
     }
     if (document.getElementById("quantityM")) {
         document.getElementById("quantityM").classList.add("hidden");
     }
-    
     if (document.getElementById("quantityL")) {
         document.getElementById("quantityL").classList.add("hidden");
     }
-    
     if (document.getElementById("quantityXL")) {
         document.getElementById("quantityXL").classList.add("hidden");
     }
-    
     if (document.getElementById("quantityXXL")) {
         document.getElementById("quantityXXL").classList.add("hidden");
     }
