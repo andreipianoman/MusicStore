@@ -4,8 +4,8 @@
     Author     : Turbotwins
 --%>
 
-<%@page import="java.util.ArrayList"%>
-<%@page import="utilityClasses.CartItem"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -15,17 +15,30 @@
         <title>JSP Page</title>
     </head>
     
-    <sql:query dataSource="${snapshot}" var="cart">
-        SELECT METAL.ITEMS.NAME, METAL.CART_ITEMS.QUANTITY, METAL.CART_ITEMS.PRICE, METAL.SIZES.SIZE AS SIZE
-        FROM CART_ITEMS
-        INNER JOIN METAL.ITEMS ON METAL.CART_ITEMS.ITEM_ID=METAL.ITEMS.ID
-        INNER JOIN METAL.SIZES ON METAL.CART_ITEMS.SIZE_ID=METAL.SIZES.ID
-        WHERE METAL.CART_ITEMS.USER_ID=?
-        <sql:param value = "${user}" />
-    </sql:query>
     
     <body>
         <%@ include file="./utils/menu.jsp" %>
+        
+        <c:set var = "user" value ="${currentUser}" />
+        
+        <sql:setDataSource 
+            var="snapshot" 
+            driver="org.apache.derby.jdbc.ClientDriver"
+            url="jdbc:derby://localhost:1527/metal;create=true;"
+            user="metal"  
+            password="metal"/>
+        
+        <sql:query dataSource="${snapshot}" var="cart">
+            SELECT METAL.ITEMS.NAME, METAL.CART_ITEMS.QUANTITY, METAL.CART_ITEMS.PRICE, METAL.SIZES.SIZE AS SIZE
+            FROM CART_ITEMS
+            INNER JOIN METAL.ITEMS ON METAL.CART_ITEMS.ITEM_ID=METAL.ITEMS.ID
+            INNER JOIN METAL.SIZES ON METAL.CART_ITEMS.SIZE_ID=METAL.SIZES.ID
+            WHERE METAL.CART_ITEMS.USER_ID=?
+            <sql:param value = "${user}" />
+        </sql:query>
+    
+        <h1>${user}</h1>
+        
         <table border="1">
             <thead>
                 <tr>
@@ -36,23 +49,8 @@
                     <td></td>
                 </tr>
             </thead>
-            <c:set var="total" value="0" scope="page" />
-            <tbody>
-                <c:forEach items="${cart}" var="item">
-                <tr>
-                    <td class="cartTableCenter "><span>${item.name}</span></td>
-                    <td class="cartTableCenter "><span>${item.quantity}</span></td>
-                    <td class="cartTableCenter "><span>${item.price}</span></td>
-                    <td class="cartTableCenter "><span>${item.size}</span></td>
-                    <td class="cartTableCenter "><img class = "cartImage" src="${item.image}"></td>
-                </tr>
-                <c:set var="total" value="${total + item.price}" scope="page" />
-                </c:forEach>
-            </tbody>
         </table>
-        <br>
-        <span>Total price: ${total}</span>
-        <br>
+            
         <form action="${pageContext.request.contextPath}/CheckoutServlet" method="POST"">
             <input type="submit" value="Checkout">
         </form>

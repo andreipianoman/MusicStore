@@ -79,14 +79,7 @@ public class AddToCartServlet extends HttpServlet {
                 }
                 
                 //Get User id
-                String username = (String) request.getSession().getAttribute("currentUser");
-                String userIDQuery = "SELECT METAL.USERS.ID FROM METAL.USERS WHERE METAL.USERS.USERNAME = '" + username + "'";
-                userStatement = connection.createStatement();
-                ResultSet resultSetUserID = userStatement.executeQuery(userIDQuery);
-                Integer userID = null;
-                if (resultSetUserID.next()) {
-                    userID = ((Integer) resultSetUserID.getObject(1));
-                }
+                Integer userID= (Integer) request.getSession().getAttribute("currentUser");
                 
                 //Check if the item is already in cart
                 String searchItemQuery = "SELECT * FROM CART_ITEMS WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
@@ -163,14 +156,7 @@ public class AddToCartServlet extends HttpServlet {
                 }
                 
                 //Get User id
-                String username = (String) request.getSession().getAttribute("currentUser");
-                String userIDQuery = "SELECT METAL.USERS.ID FROM METAL.USERS WHERE METAL.USERS.USERNAME = '" + username + "'";
-                userStatement = connection.createStatement();
-                ResultSet resultSetUserID = userStatement.executeQuery(userIDQuery);
-                Integer userID = null;
-                if (resultSetUserID.next()) {
-                    userID = ((Integer) resultSetUserID.getObject(1));
-                }
+                Integer userID= (Integer) request.getSession().getAttribute("currentUser");
                 
                 //Check if the item is already in cart
                 String searchItemQuery = "SELECT * FROM CART_ITEMS WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
