@@ -42,10 +42,6 @@ public class CheckoutServlet extends HttpServlet {
         String url = "jdbc:derby://localhost:1527/metal;create=true";
         String driver = "org.apache.derby.jdbc.ClientDriver";
         
-        ArrayList<CartItem> cart = (ArrayList) request.getSession().getAttribute("cart");
-        for (CartItem x: cart) {
-            
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
