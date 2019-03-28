@@ -38,6 +38,7 @@
         </sql:query>
         <c:set var = "total" value = "0" />
         
+        <form action="${pageContext.request.contextPath}/CheckoutServlet" method="POST"">
         <table border="1">
             <thead>
                 <tr>
@@ -61,7 +62,6 @@
         </table>
         <br>
         <span>Total price: ${total}</span>
-        <form action="${pageContext.request.contextPath}/CheckoutServlet" method="POST"">
             <input type="submit" value="Checkout">
         </form>
     </body>

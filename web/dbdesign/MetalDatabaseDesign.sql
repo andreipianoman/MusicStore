@@ -26,7 +26,7 @@ create table METAL.ROLES(ID  integer primary key, NAME varchar(100));
 create table METAL.USERS(ID  integer primary key, USERNAME varchar(100), PASSWORD varchar(25), ROLE_ID integer);
 create table METAL.CART_ITEMS(ID integer primary key, ITEM_ID integer, QUANTITY integer, PRICE double, SIZE_ID integer, USER_ID integer);
 create table METAL.ORDERS(ID integer primary key, USER_ID integer);
-create table METAL.ORDERED_ITEMS(ID integer primary key, ITEM_ID integer, ORDER_ID integer, SIZE_ID integer, QUANTITY integer, PRICE double);
+create table METAL.ORDERED_ITEMS(ITEM_ID integer, ORDER_ID integer, SIZE_ID integer, QUANTITY integer, PRICE double);
 
 ALTER TABLE METAL.USERS ADD FOREIGN KEY (ROLE_ID) REFERENCES METAL.ROLES (ID);
 ALTER TABLE METAL.LABELS ADD FOREIGN KEY (COUNTRY_ID) REFERENCES METAL.COUNTRIES (ID);
