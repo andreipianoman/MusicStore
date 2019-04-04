@@ -100,22 +100,12 @@ public class CheckoutServlet extends HttpServlet {
                 pstmntRemoveCartItems.execute();
             }
 
-                
-            
             request.getRequestDispatcher("./MainPage.jsp").forward(request, response);
+            
         } catch (ClassNotFoundException | SQLException e) {
             Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, e);
             throw new SQLException();
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

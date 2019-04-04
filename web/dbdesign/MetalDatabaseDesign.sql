@@ -19,14 +19,14 @@ create table METAL.SIZES(ID integer primary key, SIZE varchar(10));
 create table METAL.COUNTRIES(ID integer primary key, NAME varchar(100));
 create table METAL.GENRES(ID integer primary key, NAME varchar(100));
 create table METAL.IMAGES(ID integer primary key, ADDRESS varchar(10000));
-create table METAL.ITEMS(ID integer primary key, NAME varchar(100), PRICE double, STOCK integer, CATEGORY_ID integer, IMAGE_ID integer, BAND_ID integer, GENRE_ID integer, LABEL_ID integer);
+create table METAL.ITEMS(ID integer primary key, NAME varchar(100), PRICE DECIMAL(5, 2), STOCK integer, CATEGORY_ID integer, IMAGE_ID integer, BAND_ID integer, GENRE_ID integer, LABEL_ID integer);
 create table METAL.CLOTHING_SIZE_STOCKS(ID integer primary key, ITEM_ID integer, SIZE_ID integer, STOCK integer);
 create table METAL.LABELS (ID integer primary key, NAME varchar(100), WEBSITE varchar(10000), COUNTRY_ID integer, IMAGE_ID integer);
 create table METAL.ROLES(ID  integer primary key, NAME varchar(100));
 create table METAL.USERS(ID  integer primary key, USERNAME varchar(100), PASSWORD varchar(25), ROLE_ID integer);
-create table METAL.CART_ITEMS(ID integer primary key, ITEM_ID integer, QUANTITY integer, PRICE double, SIZE_ID integer, USER_ID integer);
+create table METAL.CART_ITEMS(ID integer primary key, ITEM_ID integer, QUANTITY integer, PRICE DECIMAL(5, 2), SIZE_ID integer, USER_ID integer);
 create table METAL.ORDERS(ID integer primary key, USER_ID integer);
-create table METAL.ORDERED_ITEMS(ITEM_ID integer, ORDER_ID integer, SIZE_ID integer, QUANTITY integer, PRICE double);
+create table METAL.ORDERED_ITEMS(ITEM_ID integer, ORDER_ID integer, SIZE_ID integer, QUANTITY integer, PRICE DECIMAL(5, 2));
 
 ALTER TABLE METAL.USERS ADD FOREIGN KEY (ROLE_ID) REFERENCES METAL.ROLES (ID);
 ALTER TABLE METAL.LABELS ADD FOREIGN KEY (COUNTRY_ID) REFERENCES METAL.COUNTRIES (ID);
