@@ -39,8 +39,9 @@ public class EditCartServlet extends HttpServlet {
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         
-        Connection connection;
-        Statement statement;
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
         String user = "metal";
         String password = "metal";
         String url = "jdbc:derby://localhost:1527/metal;create=true";
@@ -58,18 +59,18 @@ public class EditCartServlet extends HttpServlet {
             //Get Size id
             String sizeIDQuery = "SELECT METAL.SIZES.ID FROM METAL.SIZES WHERE METAL.SIZES.SIZE = '" + size + "'";
             statement = connection.createStatement();
-            ResultSet resultSetSizeID = statement.executeQuery(sizeIDQuery);
+            resultSet = statement.executeQuery(sizeIDQuery);
             Integer sizeID = null;
-            if (resultSetSizeID.next()) {
-                sizeID = ((Integer) resultSetSizeID.getObject(1));
+            if (resultSet.next()) {
+                sizeID = ((Integer) resultSet.getObject(1));
             }
             
             //Get Item id
             String itemIDQuery = "SELECT METAL.ITEMS.ID FROM METAL.ITEMS WHERE METAL.ITEMS.NAME = '" + item + "'";
-            ResultSet resultSetItemID = statement.executeQuery(itemIDQuery);
+            resultSet = statement.executeQuery(itemIDQuery);
             Integer itemID = null;
-            if (resultSetItemID.next()) {
-                itemID = ((Integer) resultSetItemID.getObject(1));
+            if (resultSet.next()) {
+                itemID = ((Integer) resultSet.getObject(1));
             }
             
             String cartItemQuantityQuery = "SELECT METAL.CART_ITEMS.QUANTITY FROM METAL.CART_ITEMS WHERE METAL.CART_ITEMS.ITEM_ID = " + itemID + " AND METAL.CART_ITEMS.SIZE_ID = " + sizeID + " AND METAL.CART_ITEMS.USER_ID = " + userID;
@@ -84,15 +85,10 @@ public class EditCartServlet extends HttpServlet {
                 String decreaseItemStock = "UPDATE METAL.ITEMS SET METAL.ITEMS.STOCK = (" + itemStockQuery + ") - 1 WHERE METAL.ITEMS.ID = " + itemID;
                 String decreaseItemSizeStock = "UPDATE METAL.CLOTHING_SIZE_STOCKS SET METAL.CLOTHING_SIZE_STOCKS.STOCK = (" + itemSizeStockQuery + ") - 1 WHERE METAL.CLOTHING_SIZE_STOCKS.ITEM_ID = " + itemID + " AND METAL.CLOTHING_SIZE_STOCKS.SIZE_ID = " + sizeID;
                 
-                PreparedStatement pstmntIncreaseCartItemQuantity = connection.prepareStatement(increaseCartItemQuantity);
-                PreparedStatement pstmntIncreaseCartItemPrice = connection.prepareStatement(increaseCartItemPrice);
-                PreparedStatement pstmntDecreaseItemStock = connection.prepareStatement(decreaseItemStock);
-                PreparedStatement pstmntDecreaseItemSizeStock = connection.prepareStatement(decreaseItemSizeStock);
-                
-                pstmntIncreaseCartItemQuantity.execute();
-                pstmntIncreaseCartItemPrice.execute();
-                pstmntDecreaseItemStock.execute();
-                pstmntDecreaseItemSizeStock.execute();
+                statement.execute(increaseCartItemQuantity);
+                statement.execute(increaseCartItemPrice);
+                statement.execute(decreaseItemStock);
+                statement.execute(decreaseItemSizeStock);
                 
                 request.getRequestDispatcher("./cart.jsp").forward(request, response);
                 
@@ -102,15 +98,10 @@ public class EditCartServlet extends HttpServlet {
                 String increaseItemStock = "UPDATE METAL.ITEMS SET METAL.ITEMS.STOCK = (" + itemStockQuery + ") + 1 WHERE METAL.ITEMS.ID = " + itemID;
                 String increaseItemSizeStock = "UPDATE METAL.CLOTHING_SIZE_STOCKS SET METAL.CLOTHING_SIZE_STOCKS.STOCK = (" + itemSizeStockQuery + ") + 1 WHERE METAL.CLOTHING_SIZE_STOCKS.ITEM_ID = " + itemID + " AND METAL.CLOTHING_SIZE_STOCKS.SIZE_ID = " + sizeID;
                 
-                PreparedStatement pstmntIncreaseCartItemQuantity = connection.prepareStatement(decreaseCartItemQuantity);
-                PreparedStatement pstmntDecreaseCartItemPrice = connection.prepareStatement(decreaseCartItemPrice);
-                PreparedStatement pstmntIncreaseItemStock = connection.prepareStatement(increaseItemStock);
-                PreparedStatement pstmntIncreaseItemSizeStock = connection.prepareStatement(increaseItemSizeStock);
-                
-                pstmntIncreaseCartItemQuantity.execute();
-                pstmntDecreaseCartItemPrice.execute();
-                pstmntIncreaseItemStock.execute();
-                pstmntIncreaseItemSizeStock.execute();
+                statement.execute(decreaseCartItemQuantity);
+                statement.execute(decreaseCartItemPrice);
+                statement.execute(increaseItemStock);
+                statement.execute(increaseItemSizeStock);
                 
                 request.getRequestDispatcher("./cart.jsp").forward(request, response);
             } else {
@@ -118,20 +109,38 @@ public class EditCartServlet extends HttpServlet {
                 String addToSizeStock = "UPDATE METAL.CLOTHING_SIZE_STOCKS SET METAL.CLOTHING_SIZE_STOCKS.STOCK = (" + itemSizeStockQuery + ") + (" + cartItemQuantityQuery + ") WHERE METAL.CLOTHING_SIZE_STOCKS.ITEM_ID = " + itemID + " AND METAL.CLOTHING_SIZE_STOCKS.SIZE_ID = " + sizeID;
                 String deleteFromCart = "DELETE FROM METAL.CART_ITEMS WHERE METAL.CART_ITEMS.ITEM_ID = " + itemID + " AND METAL.CART_ITEMS.SIZE_ID = " + sizeID + " AND METAL.CART_ITEMS.USER_ID = " + userID;
                 
-                PreparedStatement pstmntAddToItemStock = connection.prepareStatement(addToItemStock);
-                PreparedStatement pstmntAddToSizeStock = connection.prepareStatement(addToSizeStock);
-                PreparedStatement pstmntDeleteFromCart = connection.prepareStatement(deleteFromCart);
-                
-                pstmntAddToItemStock.execute();
-                pstmntAddToSizeStock.execute();
-                pstmntDeleteFromCart.execute();
+                statement.execute(addToItemStock);
+                statement.execute(addToSizeStock);
+                statement.execute(deleteFromCart);
                 
                 request.getRequestDispatcher("./cart.jsp").forward(request, response);
             }
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(EditCartServlet.class.getName()).log(Level.SEVERE, null, ex);
             throw new SQLException();
-        } 
+        } finally {
+                if (resultSet != null) {
+                    try
+                    {
+                        resultSet.close();
+                    }
+                    catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+                }
+                if (statement != null) {
+                    try
+                    {
+                       statement.close();
+                    }
+                    catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+                }
+                if (connection != null) {
+                    try
+                    {
+                        connection.close();
+                    }
+                    catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+                }
+            }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

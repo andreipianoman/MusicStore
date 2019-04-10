@@ -63,6 +63,28 @@ public class Index extends HttpServlet {
         } catch (ClassNotFoundException | SQLException e) {
             Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, e);
             throw new SQLException();
+        } finally {
+            if (resultSet != null) {
+                try
+                {
+                    resultSet.close();
+                }
+                catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+            }
+            if (statement != null) {
+                try
+                {
+                   statement.close();
+                }
+                catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+            }
+            if (connection != null) {
+                try
+                {
+                    connection.close();
+                }
+                catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+            }
         }
     }
 

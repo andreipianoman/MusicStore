@@ -42,10 +42,10 @@ public class CheckoutServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         
         Connection connection = null;
-        Statement statement;
-        PreparedStatement pstmntCreateOrder;
-        PreparedStatement pstmntOrderItems;
-        PreparedStatement pstmntRemoveCartItems;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        PreparedStatement pstmntOrderItems = null;
+        PreparedStatement pstmntCreateOrder = null;
         String user = "metal";
         String password = "metal";
         String url = "jdbc:derby://localhost:1527/metal;create=true";
@@ -63,7 +63,7 @@ public class CheckoutServlet extends HttpServlet {
             while (true) {
                 String query = "SELECT * FROM ORDERS WHERE ID = " + count_id;
                 statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(query);
+                resultSet = statement.executeQuery(query);
                 boolean resultSetHasRows = resultSet.next();
                 if (resultSetHasRows) {
                     count_id = count_id + 1;
@@ -76,14 +76,14 @@ public class CheckoutServlet extends HttpServlet {
             String createOrder = "INSERT INTO METAL.ORDERS VALUES (" + orderID + ", " + userID + ")";
             pstmntCreateOrder = connection.prepareStatement(createOrder);
             String cartItemsQuery = "SELECT * FROM CART_ITEMS WHERE USER_ID = " + userID;
-            ResultSet cartItems = statement.executeQuery(cartItemsQuery);
-            if (cartItems.next()) {
+            resultSet = statement.executeQuery(cartItemsQuery);
+            if (resultSet.next()) {
                 pstmntCreateOrder.execute();
                 do {
-                    Integer itemID = cartItems.getInt(2);
-                    Integer quantity = cartItems.getInt(3);
-                    Integer sizeID = cartItems.getInt(5);
-                    Double price = cartItems.getDouble(4);
+                    Integer itemID = resultSet.getInt(2);
+                    Integer quantity = resultSet.getInt(3);
+                    Integer sizeID = resultSet.getInt(5);
+                    Double price = resultSet.getDouble(4);
                     String insertOrderedItem = "INSERT INTO METAL.ORDERED_ITEMS VALUES (?, ?, ?, ?, ?)";
                     pstmntOrderItems = connection.prepareStatement(insertOrderedItem);
                     pstmntOrderItems.setInt(1, itemID);
@@ -92,12 +92,11 @@ public class CheckoutServlet extends HttpServlet {
                     pstmntOrderItems.setInt(4, quantity);
                     pstmntOrderItems.setDouble(5, price);
                     pstmntOrderItems.execute();
-                } while (cartItems.next());
+                } while (resultSet.next());
 
 
                 String removeFromCart = "DELETE FROM METAL.CART_ITEMS WHERE METAL.CART_ITEMS.USER_ID = " + userID;
-                pstmntRemoveCartItems = connection.prepareStatement(removeFromCart);
-                pstmntRemoveCartItems.execute();
+                statement.execute(removeFromCart);
             }
 
             request.getRequestDispatcher("./MainPage.jsp").forward(request, response);
@@ -105,7 +104,43 @@ public class CheckoutServlet extends HttpServlet {
         } catch (ClassNotFoundException | SQLException e) {
             Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, e);
             throw new SQLException();
-        }
+        } finally {
+                if (resultSet != null) {
+                    try
+                    {
+                        resultSet.close();
+                    }
+                    catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+                }
+                if (statement != null) {
+                    try
+                    {
+                       statement.close();
+                    }
+                    catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+                }
+                if (pstmntOrderItems != null) {
+                    try
+                    {
+                       pstmntOrderItems.close();
+                    }
+                    catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+                }
+                if (pstmntCreateOrder != null) {
+                    try
+                    {
+                       pstmntCreateOrder.close();
+                    }
+                    catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+                }
+                if (connection != null) {
+                    try
+                    {
+                        connection.close();
+                    }
+                    catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+                }
+            }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

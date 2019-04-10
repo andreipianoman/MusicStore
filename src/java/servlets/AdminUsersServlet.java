@@ -39,23 +39,23 @@ public class AdminUsersServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         
         Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
         String user = "metal";
         String password = "metal";
         String url = "jdbc:derby://localhost:1527/metal;create=true";
         String driver = "org.apache.derby.jdbc.ClientDriver";
         
-        if (request.getParameter("insert") != null) {
-            Statement statement;
-            try {
-                Class driverClass = Class.forName(driver);
-                connection = DriverManager.getConnection(url, user, password);
+        try {
+            Class driverClass = Class.forName(driver);
+            connection = DriverManager.getConnection(url, user, password);
             
-            
+            if (request.getParameter("insert") != null) {
                 Integer count_id = 1;
                 while (true) {
                     String query = "SELECT * FROM USERS WHERE ID = " + count_id;
                     statement = connection.createStatement();
-                    ResultSet resultSet = statement.executeQuery(query);
+                    resultSet = statement.executeQuery(query);
                     boolean resultSetHasRows = resultSet.next();
                     if (resultSetHasRows) {
                         count_id = count_id + 1;
@@ -73,16 +73,7 @@ public class AdminUsersServlet extends HttpServlet {
                 statement.execute(insertUser);
                 
                 request.getRequestDispatcher("./usersAdmin.jsp").forward(request, response);
-            } catch (ClassNotFoundException | SQLException ex) {
-                Logger.getLogger(AdminUsersServlet.class.getName()).log(Level.SEVERE, null, ex);
-                throw new SQLException();
-            }
-        } else if (request.getParameter("update") != null) {
-            Statement statement;
-            try {
-                Class driverClass = Class.forName(driver);
-                connection = DriverManager.getConnection(url, user, password);
-            
+            } else if (request.getParameter("update") != null) {
                 String[] selectedIdCheckboxes = request.getParameterValues("userIdCheckbox");
                 String username = request.getParameter("username");
                 String userPass = request.getParameter("password");
@@ -103,16 +94,7 @@ public class AdminUsersServlet extends HttpServlet {
                     statement.execute(updateUser);
                 }
                 request.getRequestDispatcher("./usersAdmin.jsp").forward(request, response);
-            } catch (ClassNotFoundException | SQLException ex) {
-                Logger.getLogger(AdminUsersServlet.class.getName()).log(Level.SEVERE, null, ex);
-                throw new SQLException();
-            }
-        } else if (request.getParameter("delete") != null) {
-            Statement statement;
-            try {
-                Class driverClass = Class.forName(driver);
-                connection = DriverManager.getConnection(url, user, password);
-            
+            } else if (request.getParameter("delete") != null) {
                 String[] selectedIdCheckboxes = request.getParameterValues("userIdCheckbox");
                 
                 for(String id : selectedIdCheckboxes){
@@ -121,9 +103,30 @@ public class AdminUsersServlet extends HttpServlet {
                     statement.execute(deleteUser);
                 }
                 request.getRequestDispatcher("./usersAdmin.jsp").forward(request, response);
-            } catch (ClassNotFoundException | SQLException ex) {
-                Logger.getLogger(AdminUsersServlet.class.getName()).log(Level.SEVERE, null, ex);
-                throw new SQLException();
+            }
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminUsersServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (resultSet != null) {
+                try
+                {
+                    resultSet.close();
+                }
+                catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+            }
+            if (statement != null) {
+                try
+                {
+                   statement.close();
+                }
+                catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+            }
+            if (connection != null) {
+                try
+                {
+                    connection.close();
+                }
+                catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
             }
         }
     }

@@ -38,16 +38,10 @@ public class AddToCartServlet extends HttpServlet {
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         
-        Connection connection;
-        PreparedStatement pstmnt;
-        PreparedStatement pstmntSize;
-        PreparedStatement pstmntAddToCart;
-        PreparedStatement pstmntUpdateCartQuantity;
-        PreparedStatement pstmntUpdateCartPrice;
-        Statement statement;
-        Statement sizeStatement;
-        Statement userStatement;
-        Statement searchItemStatement;
+        Connection connection = null;
+        PreparedStatement pstmntAddToCart = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
         String user = "metal";
         String password = "metal";
         String url = "jdbc:derby://localhost:1527/metal;create=true";
@@ -71,11 +65,11 @@ public class AddToCartServlet extends HttpServlet {
                 
                 //Get Size id
                 String sizeIDQuery = "SELECT METAL.SIZES.ID FROM METAL.SIZES WHERE METAL.SIZES.SIZE = '" + itemSize + "'";
-                sizeStatement = connection.createStatement();
-                ResultSet resultSetSizeID = sizeStatement.executeQuery(sizeIDQuery);
+                statement = connection.createStatement();
+                resultSet = statement.executeQuery(sizeIDQuery);
                 Integer sizeID = null;
-                if (resultSetSizeID.next()) {
-                    sizeID = ((Integer) resultSetSizeID.getObject(1));
+                if (resultSet.next()) {
+                    sizeID = ((Integer) resultSet.getObject(1));
                 }
                 
                 //Get User id
@@ -83,21 +77,18 @@ public class AddToCartServlet extends HttpServlet {
                 
                 //Check if the item is already in cart
                 String searchItemQuery = "SELECT * FROM CART_ITEMS WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
-                searchItemStatement = connection.createStatement();
-                ResultSet foundItemResultSet = searchItemStatement.executeQuery(searchItemQuery);
-                boolean foundItemResultSetHasRows = foundItemResultSet.next();
+                resultSet = statement.executeQuery(searchItemQuery);
+                boolean foundItemResultSetHasRows = resultSet.next();
                 if (foundItemResultSetHasRows) {
                     
                     // Update quantity and price in CART_ITEMS table
                     String cartItemQuantityQuery = "SELECT CART_ITEMS.QUANTITY FROM CART_ITEMS WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
                     String updateItemQuantity = "UPDATE METAL.CART_ITEMS SET METAL.CART_ITEMS.QUANTITY = (" + cartItemQuantityQuery + ") + " + itemQuantity + " WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
-                    pstmntUpdateCartQuantity = connection.prepareStatement(updateItemQuantity);
-                    pstmntUpdateCartQuantity.execute();
+                    statement.execute(updateItemQuantity);
                     
                     String cartItemPriceQuery = "SELECT CART_ITEMS.PRICE FROM CART_ITEMS WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
                     String updateItemPrice = "UPDATE METAL.CART_ITEMS SET METAL.CART_ITEMS.PRICE = (" + cartItemPriceQuery + ") + " + itemPrice + " WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
-                    pstmntUpdateCartPrice = connection.prepareStatement(updateItemPrice);
-                    pstmntUpdateCartPrice.execute();
+                    statement.execute(updateItemPrice);
                     
                 } else {
                     
@@ -106,7 +97,7 @@ public class AddToCartServlet extends HttpServlet {
                     while (true) {
                         String query = "SELECT * FROM CART_ITEMS WHERE ID = " + count_id;
                         statement = connection.createStatement();
-                        ResultSet resultSet = statement.executeQuery(query);
+                        resultSet = statement.executeQuery(query);
                         boolean resultSetHasRows = resultSet.next();
                         if (resultSetHasRows) {
                             count_id = count_id + 1;
@@ -130,14 +121,42 @@ public class AddToCartServlet extends HttpServlet {
                 }
                 //Update item stock
                 String updateItemStock = "UPDATE METAL.ITEMS SET METAL.ITEMS.STOCK = (SELECT METAL.ITEMS.STOCK FROM METAL.ITEMS WHERE METAL.ITEMS.NAME = '" + itemName + "') - " + itemQuantity + " WHERE METAL.ITEMS.NAME = '" + itemName + "'";
-                pstmnt = connection.prepareStatement(updateItemStock);
-                pstmnt.execute();
+                statement.execute(updateItemStock);
                     
                 request.getRequestDispatcher("./itemDetails.jsp").forward(request, response);
             
             } catch (ClassNotFoundException | SQLException e) {
                 Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, e);
                 throw new SQLException();
+            } finally {
+                if (resultSet != null) {
+                    try
+                    {
+                        resultSet.close();
+                    }
+                    catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+                }
+                if (statement != null) {
+                    try
+                    {
+                       statement.close();
+                    }
+                    catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+                }
+                if (pstmntAddToCart != null) {
+                    try
+                    {
+                       pstmntAddToCart.close();
+                    }
+                    catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+                }
+                if (connection != null) {
+                    try
+                    {
+                        connection.close();
+                    }
+                    catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+                }
             }
             
         } else {
@@ -148,11 +167,11 @@ public class AddToCartServlet extends HttpServlet {
                 
                 //Get Size id
                 String sizeIDQuery = "SELECT METAL.SIZES.ID FROM METAL.SIZES WHERE METAL.SIZES.SIZE = '" + itemSize + "'";
-                sizeStatement = connection.createStatement();
-                ResultSet resultSetSizeID = sizeStatement.executeQuery(sizeIDQuery);
+                statement = connection.createStatement();
+                resultSet = statement.executeQuery(sizeIDQuery);
                 Integer sizeID = null;
-                if (resultSetSizeID.next()) {
-                    sizeID = ((Integer) resultSetSizeID.getObject(1));
+                if (resultSet.next()) {
+                    sizeID = ((Integer) resultSet.getObject(1));
                 }
                 
                 //Get User id
@@ -160,21 +179,18 @@ public class AddToCartServlet extends HttpServlet {
                 
                 //Check if the item is already in cart
                 String searchItemQuery = "SELECT * FROM CART_ITEMS WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
-                searchItemStatement = connection.createStatement();
-                ResultSet foundItemResultSet = searchItemStatement.executeQuery(searchItemQuery);
-                boolean foundItemResultSetHasRows = foundItemResultSet.next();
+                resultSet = statement.executeQuery(searchItemQuery);
+                boolean foundItemResultSetHasRows = resultSet.next();
                 if (foundItemResultSetHasRows) {
                     
                     // Update quantity and price in CART_ITEMS table
                     String cartItemQuantityQuery = "SELECT CART_ITEMS.QUANTITY FROM CART_ITEMS WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
                     String updateItemQuantity = "UPDATE METAL.CART_ITEMS SET METAL.CART_ITEMS.QUANTITY = (" + cartItemQuantityQuery + ") + " + itemQuantity + " WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
-                    pstmntUpdateCartQuantity = connection.prepareStatement(updateItemQuantity);
-                    pstmntUpdateCartQuantity.execute();
+                    statement.execute(updateItemQuantity);
                     
                     String cartItemPriceQuery = "SELECT CART_ITEMS.PRICE FROM CART_ITEMS WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
                     String updateItemPrice = "UPDATE METAL.CART_ITEMS SET METAL.CART_ITEMS.PRICE = (" + cartItemPriceQuery + ") + " + itemPrice + " WHERE ITEM_ID = " + itemID + " AND SIZE_ID = " + sizeID + " AND USER_ID = " + userID;
-                    pstmntUpdateCartPrice = connection.prepareStatement(updateItemPrice);
-                    pstmntUpdateCartPrice.execute();
+                    statement.execute(updateItemPrice);
                     
                 } else {
                     
@@ -183,7 +199,7 @@ public class AddToCartServlet extends HttpServlet {
                     while (true) {
                         String query = "SELECT * FROM CART_ITEMS WHERE ID = " + count_id;
                         statement = connection.createStatement();
-                        ResultSet resultSet = statement.executeQuery(query);
+                        resultSet = statement.executeQuery(query);
                         boolean resultSetHasRows = resultSet.next();
                         if (resultSetHasRows) {
                             count_id = count_id + 1;
@@ -211,15 +227,42 @@ public class AddToCartServlet extends HttpServlet {
 
                 String itemSizeStockQuery = "SELECT METAL.CLOTHING_SIZE_STOCKS.STOCK FROM METAL.CLOTHING_SIZE_STOCKS WHERE CLOTHING_SIZE_STOCKS.ITEM_ID = " + itemID + " AND METAL.CLOTHING_SIZE_STOCKS.SIZE_ID = (" + sizeIDQuery + ")";
                 String updateItemSizeStock = "UPDATE METAL.CLOTHING_SIZE_STOCKS SET METAL.CLOTHING_SIZE_STOCKS.STOCK = (" + itemSizeStockQuery + ") - " + itemQuantity + " WHERE ITEM_ID = " + itemID + " AND SIZE_ID = (" + sizeIDQuery + ")";
-                pstmnt = connection.prepareStatement(updateItemStock);
-                pstmntSize = connection.prepareStatement(updateItemSizeStock);
-                pstmntSize.execute();
-                pstmnt.execute();
+                statement.execute(updateItemSizeStock);
+                statement.execute(updateItemStock);
                 request.getRequestDispatcher("./itemDetails.jsp").forward(request, response);
             
             } catch (ClassNotFoundException | SQLException e) {
                 Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, e);
                 throw new SQLException();
+            } finally {
+                if (resultSet != null) {
+                    try
+                    {
+                        resultSet.close();
+                    }
+                    catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+                }
+                if (statement != null) {
+                    try
+                    {
+                       statement.close();
+                    }
+                    catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+                }
+                if (pstmntAddToCart != null) {
+                    try
+                    {
+                       pstmntAddToCart.close();
+                    }
+                    catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+                }
+                if (connection != null) {
+                    try
+                    {
+                        connection.close();
+                    }
+                    catch (SQLException ex) {Logger.getLogger(Index.class.getName()).log(Level.SEVERE, null, ex);}
+                }
             }
         }
         
