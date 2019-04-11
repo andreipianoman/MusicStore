@@ -32,6 +32,14 @@
         <servlet-name>AdminUsersServlet</servlet-name>
         <servlet-class>servlets.AdminUsersServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AdminGenresServlet</servlet-name>
+        <servlet-class>servlets.AdminGenresServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminCountriesServlet</servlet-name>
+        <servlet-class>servlets.AdminCountriesServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Index</servlet-name>
         <url-pattern>/Index</url-pattern>
@@ -63,6 +71,14 @@
     <servlet-mapping>
         <servlet-name>AdminUsersServlet</servlet-name>
         <url-pattern>/AdminUsersServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminGenresServlet</servlet-name>
+        <url-pattern>/AdminGenresServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminCountriesServlet</servlet-name>
+        <url-pattern>/AdminCountriesServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
