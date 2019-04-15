@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Turbotwins
  */
-public class AdminCountriesServlet extends HttpServlet {
+public class AdminLabelsServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -52,15 +52,19 @@ public class AdminCountriesServlet extends HttpServlet {
             
             if (request.getParameter("insert") != null) {
                 
-                String countryName = request.getParameter("Country name");
-                if ("".equals(countryName)) {
-                    request.getRequestDispatcher("./countriesAdmin.jsp").forward(request, response);
+                String labelName = request.getParameter("Label name");
+                String website = request.getParameter("website");
+                String countryID = request.getParameter("country");
+                String imageID = request.getParameter("imageCheckbox");
+
+                if ("".equals(labelName) || "".equals(website) || imageID == null) {
+                    request.getRequestDispatcher("./labelsAdmin.jsp").forward(request, response);
                     return;
                 }
                 
                 Integer count_id = 1;
                 while (true) {
-                    String query = "SELECT * FROM COUNTRIES WHERE ID = " + count_id;
+                    String query = "SELECT * FROM LABELS WHERE ID = " + count_id;
                     statement = connection.createStatement();
                     resultSet = statement.executeQuery(query);
                     boolean resultSetHasRows = resultSet.next();
@@ -71,48 +75,62 @@ public class AdminCountriesServlet extends HttpServlet {
                         break;
                     }
                 }
-                Integer newCountryId = count_id;
+                Integer newLabelId = count_id;
                 
-                String insertGenre = "INSERT INTO METAL.COUNTRIES (ID, NAME) VALUES (" + newCountryId + ", '" + countryName + "')";
-                statement.execute(insertGenre);
+                String insertLabel = "INSERT INTO METAL.LABELS (ID, NAME, WEBSITE, COUNTRY_ID, IMAGE_ID) VALUES (" + newLabelId + ", '" + labelName + "', '" + website + "', " + countryID + ", " + imageID + ")";
+                statement.execute(insertLabel);
                 
-                request.getRequestDispatcher("./countriesAdmin.jsp").forward(request, response);
+                request.getRequestDispatcher("./labelsAdmin.jsp").forward(request, response);
                 
             } else if (request.getParameter("update") != null) {
                 
-                String[] selectedIdCheckboxes = request.getParameterValues("countryIdCheckbox");
-                String countryName = request.getParameter("Country name");
+                String[] selectedIdCheckboxes = request.getParameterValues("labelIdCheckbox");
+                String labelName = request.getParameter("Label name");
+                String website = request.getParameter("website");
+                String countryID = request.getParameter("country");
+                String imageID = request.getParameter("imageCheckbox");
                 
                 if (selectedIdCheckboxes == null) {
-                    request.getRequestDispatcher("./countriesAdmin.jsp").forward(request, response);
+                    request.getRequestDispatcher("./labelsAdmin.jsp").forward(request, response);
                     return;
                 }
                 
                 for(String id : selectedIdCheckboxes){
-                    String updateCountry;
-                    if ("".equals(countryName)) {
-                        ;
+                    String updateLabel;
+                    if ("".equals(labelName) && "".equals(website) && imageID == null) {
+                        updateLabel = "UPDATE METAL.LABELS SET METAL.LABELS.COUNTRY_ID = " + countryID + " WHERE METAL.LABELS.ID = " + id;
+                    } else if ("".equals(labelName) && "".equals(website)) {
+                        updateLabel = "UPDATE METAL.LABELS SET METAL.LABELS.COUNTRY_ID = " + countryID + ", METAL.LABELS.IMAGE_ID = " + imageID + " WHERE METAL.LABELS.ID = " + id;
+                    } else if ("".equals(labelName) && imageID == null) {
+                        updateLabel = "UPDATE METAL.LABELS SET METAL.LABELS.COUNTRY_ID = " + countryID + ", METAL.LABELS.WEBSITE = '" + website + "' WHERE METAL.LABELS.ID = " + id;
+                    } else if ("".equals(website) && imageID == null) {
+                        updateLabel = "UPDATE METAL.LABELS SET METAL.LABELS.COUNTRY_ID = " + countryID + ", METAL.LABELS.NAME = '" + labelName + "' WHERE METAL.LABELS.ID = " + id;
+                    } else if ("".equals(website)) {
+                        updateLabel = "UPDATE METAL.LABELS SET METAL.LABELS.COUNTRY_ID = " + countryID + ", METAL.LABELS.NAME = '" + labelName + "', METAL.LABELS.IMAGE_ID = " + imageID + " WHERE METAL.LABELS.ID = " + id;
+                    } else if (imageID == null) {
+                        updateLabel = "UPDATE METAL.LABELS SET METAL.LABELS.COUNTRY_ID = " + countryID + ", METAL.LABELS.NAME = '" + labelName + "', METAL.LABELS.WEBSITE = '" + website + "' WHERE METAL.LABELS.ID = " + id;
+                    } else if ("".equals(labelName)) {
+                        updateLabel = "UPDATE METAL.LABELS SET METAL.LABELS.COUNTRY_ID = " + countryID + ", METAL.LABELS.IMAGE_ID = " + imageID + ", METAL.LABELS.WEBSITE = '" + website + "' WHERE METAL.LABELS.ID = " + id;
                     } else {
-                        updateCountry = "UPDATE METAL.COUNTRIES SET METAL.COUNTRIES.NAME = '" + countryName + "' WHERE METAL.COUNTRIES.ID = " + id;
-                        statement = connection.createStatement();
-                        statement.execute(updateCountry);
+                        updateLabel = "UPDATE METAL.LABELS SET METAL.LABELS.COUNTRY_ID = " + countryID + ", METAL.LABELS.NAME = '" + labelName + "', METAL.LABELS.WEBSITE = '" + website + "', METAL.LABELS.IMAGE_ID = " + imageID + " WHERE METAL.LABELS.ID = " + id;
                     }
+                    statement = connection.createStatement();
+                    statement.execute(updateLabel);
                 }
-                request.getRequestDispatcher("./countriesAdmin.jsp").forward(request, response);
+                request.getRequestDispatcher("./labelsAdmin.jsp").forward(request, response);
             } else if (request.getParameter("delete") != null) {
-                String[] selectedIdCheckboxes = request.getParameterValues("countryIdCheckbox");
-                
+                String[] selectedIdCheckboxes = request.getParameterValues("labelIdCheckbox");
                 if (selectedIdCheckboxes == null) {
-                    request.getRequestDispatcher("./countriesAdmin.jsp").forward(request, response);
+                    request.getRequestDispatcher("./labelsAdmin.jsp").forward(request, response);
                     return;
                 }
                 
                 for(String id : selectedIdCheckboxes){
-                    String deleteCountry = "DELETE FROM METAL.COUNTRIES WHERE METAL.COUNTRIES.ID = " + id;
+                    String deleteLabel = "DELETE FROM METAL.LABELS WHERE METAL.LABELS.ID = " + id;
                     statement = connection.createStatement();
-                    statement.execute(deleteCountry);
+                    statement.execute(deleteLabel);
                 }
-                request.getRequestDispatcher("./countriesAdmin.jsp").forward(request, response);
+                request.getRequestDispatcher("./labelsAdmin.jsp").forward(request, response);
             }
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(AdminUsersServlet.class.getName()).log(Level.SEVERE, null, ex);

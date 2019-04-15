@@ -40,6 +40,18 @@
         <servlet-name>AdminCountriesServlet</servlet-name>
         <servlet-class>servlets.AdminCountriesServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AdminLabelsServlet</servlet-name>
+        <servlet-class>servlets.AdminLabelsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminBandsServlet</servlet-name>
+        <servlet-class>servlets.AdminBandsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminItemsServlet</servlet-name>
+        <servlet-class>servlets.AdminItemsServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Index</servlet-name>
         <url-pattern>/Index</url-pattern>
@@ -79,6 +91,18 @@
     <servlet-mapping>
         <servlet-name>AdminCountriesServlet</servlet-name>
         <url-pattern>/AdminCountriesServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminLabelsServlet</servlet-name>
+        <url-pattern>/AdminLabelsServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminBandsServlet</servlet-name>
+        <url-pattern>/AdminBandsServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminItemsServlet</servlet-name>
+        <url-pattern>/AdminItemsServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -11,10 +11,30 @@
 
 .cartImage {
     height: 75px;
-    width: auto;
+    width: 75px;
 }
 
 .cartTableCenter {
     text-align: center; 
     vertical-align: middle;
+}
+
+.adminImage {
+    height: 250px;
+    width: 600px;
+    display: block;
+    overflow: scroll;
+    background-color: silver;
+}
+
+.imageCheckbox{
+    display: none;
+}
+
+:checked+label img {
+  transform: scale(0.9);
+  box-shadow: 0 0 5px #333;
+  z-index: -1;
+  background-color: blue;
+  opacity: 0.5;
 }

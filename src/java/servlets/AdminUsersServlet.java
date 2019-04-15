@@ -51,6 +51,16 @@ public class AdminUsersServlet extends HttpServlet {
             connection = DriverManager.getConnection(url, user, password);
             
             if (request.getParameter("insert") != null) {
+                
+                String username = request.getParameter("username");
+                String userPass = request.getParameter("password");
+                String role_id = request.getParameter("role");
+                
+                if ("".equals(username) || "".equals(userPass)) {
+                    request.getRequestDispatcher("./usersAdmin.jsp").forward(request, response);
+                    return;
+                }
+                
                 Integer count_id = 1;
                 while (true) {
                     String query = "SELECT * FROM USERS WHERE ID = " + count_id;
@@ -65,19 +75,21 @@ public class AdminUsersServlet extends HttpServlet {
                     }
                 }
                 Integer newUserId = count_id;
-                String username = request.getParameter("username");
-                String userPass = request.getParameter("password");
-                String role_id = request.getParameter("role");
                 
                 String insertUser = "INSERT INTO METAL.USERS (ID, USERNAME, PASSWORD, ROLE_ID) VALUES (" + newUserId + ", '" + username + "', '" + userPass + "', " + role_id + ")";
                 statement.execute(insertUser);
                 
-                request.getRequestDispatcher("./usersAdmin.jsp").forward(request, response);
+                //request.getRequestDispatcher("./usersAdmin.jsp").forward(request, response);
             } else if (request.getParameter("update") != null) {
                 String[] selectedIdCheckboxes = request.getParameterValues("userIdCheckbox");
                 String username = request.getParameter("username");
                 String userPass = request.getParameter("password");
                 String role_id = request.getParameter("role");
+                
+                if (selectedIdCheckboxes == null) {
+                    request.getRequestDispatcher("./usersAdmin.jsp").forward(request, response);
+                    return;
+                }
                 
                 for(String id : selectedIdCheckboxes){
                     String updateUser;
@@ -96,6 +108,11 @@ public class AdminUsersServlet extends HttpServlet {
                 request.getRequestDispatcher("./usersAdmin.jsp").forward(request, response);
             } else if (request.getParameter("delete") != null) {
                 String[] selectedIdCheckboxes = request.getParameterValues("userIdCheckbox");
+                
+                if (selectedIdCheckboxes == null) {
+                    request.getRequestDispatcher("./usersAdmin.jsp").forward(request, response);
+                    return;
+                }
                 
                 for(String id : selectedIdCheckboxes){
                     String deleteUser = "DELETE FROM METAL.USERS WHERE METAL.USERS.ID = " + id;

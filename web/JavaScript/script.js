@@ -57,3 +57,16 @@ function updateQuantityInput() {
     var size = document.getElementById('selectSizes').value;
     document.getElementById("quantity" + size).classList.remove("hidden");
 }
+
+function check(i) {
+    var id = 1;
+    while (true) {
+        if (document.getElementById("myCheckbox" + id) !== null) {
+            document.getElementById("myCheckbox" + id).checked = false;
+            id = id + 1;
+        } else {
+            break;
+        }
+    }
+    document.getElementById("myCheckbox" + i).checked = true;
+}

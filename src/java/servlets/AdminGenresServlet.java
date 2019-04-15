@@ -51,6 +51,14 @@ public class AdminGenresServlet extends HttpServlet {
             connection = DriverManager.getConnection(url, user, password);
             
             if (request.getParameter("insert") != null) {
+                
+                String genreName = request.getParameter("Genre name");
+                
+                if ("".equals(genreName)) {
+                    request.getRequestDispatcher("./genresAdmin.jsp").forward(request, response);
+                    return;
+                }
+                
                 Integer count_id = 1;
                 while (true) {
                     String query = "SELECT * FROM GENRES WHERE ID = " + count_id;
@@ -65,7 +73,6 @@ public class AdminGenresServlet extends HttpServlet {
                     }
                 }
                 Integer newGenreId = count_id;
-                String genreName = request.getParameter("Genre name");
                 
                 String insertGenre = "INSERT INTO METAL.GENRES (ID, NAME) VALUES (" + newGenreId + ", '" + genreName + "')";
                 statement.execute(insertGenre);
@@ -74,6 +81,11 @@ public class AdminGenresServlet extends HttpServlet {
             } else if (request.getParameter("update") != null) {
                 String[] selectedIdCheckboxes = request.getParameterValues("genreIdCheckbox");
                 String genreName = request.getParameter("Genre name");
+                
+                if (selectedIdCheckboxes == null) {
+                    request.getRequestDispatcher("./genresAdmin.jsp").forward(request, response);
+                    return;
+                }
                 
                 for(String id : selectedIdCheckboxes){
                     String updateGenre;
@@ -88,6 +100,11 @@ public class AdminGenresServlet extends HttpServlet {
                 request.getRequestDispatcher("./genresAdmin.jsp").forward(request, response);
             } else if (request.getParameter("delete") != null) {
                 String[] selectedIdCheckboxes = request.getParameterValues("genreIdCheckbox");
+                
+                if (selectedIdCheckboxes == null) {
+                    request.getRequestDispatcher("./genresAdmin.jsp").forward(request, response);
+                    return;
+                }
                 
                 for(String id : selectedIdCheckboxes){
                     String deleteGenre = "DELETE FROM METAL.GENRES WHERE METAL.GENRES.ID = " + id;
