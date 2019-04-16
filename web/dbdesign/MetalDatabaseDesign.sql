@@ -18,7 +18,7 @@ create table METAL.CATEGORIES(ID integer primary key, NAME varchar(100));
 create table METAL.SIZES(ID integer primary key, SIZE varchar(10));
 create table METAL.COUNTRIES(ID integer primary key, NAME varchar(100));
 create table METAL.GENRES(ID integer primary key, NAME varchar(100));
-create table METAL.IMAGES(ID integer primary key, ADDRESS varchar(10000));
+create table METAL.IMAGES(ID integer primary key, NAME varchar(100), ADDRESS varchar(10000));
 create table METAL.ITEMS(ID integer primary key, NAME varchar(100), PRICE DECIMAL(5, 2), STOCK integer, CATEGORY_ID integer, IMAGE_ID integer, BAND_ID integer, GENRE_ID integer, LABEL_ID integer);
 create table METAL.CLOTHING_SIZE_STOCKS(ID integer primary key, ITEM_ID integer, SIZE_ID integer, STOCK integer);
 create table METAL.LABELS (ID integer primary key, NAME varchar(100), WEBSITE varchar(10000), COUNTRY_ID integer, IMAGE_ID integer);
@@ -137,18 +137,18 @@ INSERT INTO METAL.COUNTRIES (ID, "NAME")
 	VALUES (5, 'Germany');
 
 
-INSERT INTO METAL.IMAGES (ID, ADDRESS) 
-	VALUES (1, 'https://www.metal-archives.com/images/8/7/6/8/87685_logo.jpg?4307');
-INSERT INTO METAL.IMAGES (ID, ADDRESS) 
-	VALUES (2, 'https://www.metal-archives.com/images/1/5/1/7/15175_label.jpg?4829');
-INSERT INTO METAL.IMAGES (ID, ADDRESS) 
-	VALUES (3, 'https://mir-s3-cdn-cf.behance.net/project_modules/disp/8480b510017273.5627a4c489f2f.jpg');
-INSERT INTO METAL.IMAGES (ID, ADDRESS) 
-	VALUES (4, 'https://img.cdandlp.com/2017/09/imgL/118954397.jpg');
-INSERT INTO METAL.IMAGES (ID, ADDRESS) 
-	VALUES (5, 'https://i.pinimg.com/originals/7e/55/1a/7e551ad35ebfcac83b70fe44bca0449c.png');
-INSERT INTO METAL.IMAGES (ID, ADDRESS) 
-	VALUES (6, 'https://yt3.ggpht.com/a-/AAuE7mBU4Y4HyrFGiqab7qZyP2MdYv_Hn16S21lmDQ=s900-mo-c-c0xffffffff-rj-k-no');
+INSERT INTO METAL.IMAGES (ID, NAME, ADDRESS) 
+	VALUES (1,  'Descend Band Logo', 'https://www.metal-archives.com/images/8/7/6/8/87685_logo.jpg?4307');
+INSERT INTO METAL.IMAGES (ID, NAME, ADDRESS) 
+	VALUES (2,  'Inverse Records Logo', 'https://www.metal-archives.com/images/1/5/1/7/15175_label.jpg?4829');
+INSERT INTO METAL.IMAGES (ID, NAME, ADDRESS) 
+	VALUES (3,  'Descend Wither CD', 'https://mir-s3-cdn-cf.behance.net/project_modules/disp/8480b510017273.5627a4c489f2f.jpg');
+INSERT INTO METAL.IMAGES (ID, NAME, ADDRESS) 
+	VALUES (4,  'Symphony X Underworld T-Shirt', 'https://img.cdandlp.com/2017/09/imgL/118954397.jpg');
+INSERT INTO METAL.IMAGES (ID, NAME, ADDRESS) 
+	VALUES (5,  'Symphony X band logo', 'https://i.pinimg.com/originals/7e/55/1a/7e551ad35ebfcac83b70fe44bca0449c.png');
+INSERT INTO METAL.IMAGES (ID, NAME, ADDRESS) 
+	VALUES (6,  'Nuclear Blast Records Logo', 'https://yt3.ggpht.com/a-/AAuE7mBU4Y4HyrFGiqab7qZyP2MdYv_Hn16S21lmDQ=s900-mo-c-c0xffffffff-rj-k-no');
 
 
 INSERT INTO METAL.LABELS (ID, "NAME", WEBSITE, COUNTRY_ID, IMAGE_ID) 

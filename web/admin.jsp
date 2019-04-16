@@ -16,6 +16,7 @@
     <body>
         <c:choose>
             <c:when test="${currentUserRole == 2}">
+                <a href="imagesAdmin.jsp">Images</a>
                 <a href="bandsAdmin.jsp">Bands</a>
                 <a href="countriesAdmin.jsp">Countries</a>
                 <a href="labelsAdmin.jsp">Labels</a>

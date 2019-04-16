@@ -52,6 +52,10 @@
         <servlet-name>AdminItemsServlet</servlet-name>
         <servlet-class>servlets.AdminItemsServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AdminImagesServlet</servlet-name>
+        <servlet-class>servlets.AdminImagesServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Index</servlet-name>
         <url-pattern>/Index</url-pattern>
@@ -103,6 +107,10 @@
     <servlet-mapping>
         <servlet-name>AdminItemsServlet</servlet-name>
         <url-pattern>/AdminItemsServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminImagesServlet</servlet-name>
+        <url-pattern>/AdminImagesServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
