@@ -16,7 +16,7 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <%@ include file="./utils/menu.jsp" %>
+        <%@ include file="./utils/admin.jsp" %>
         <sql:setDataSource 
         var="snapshot" 
         driver="org.apache.derby.jdbc.ClientDriver"

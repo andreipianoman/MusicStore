@@ -16,7 +16,7 @@
     <body>
         <c:choose>
             <c:when test="${currentUserRole == 2}">
-                <a href='./admin.jsp'>admin</a>
+                <a href='./mainAdmin.jsp'>admin</a>
                 <a href='./items.jsp'>all products</a>
                 <a href='./bands.jsp'>bands</a>
                 <a href='./labels.jsp'>labels</a>
@@ -29,5 +29,14 @@
                 <a href='./cart.jsp'>cart</a>
             </c:when>
         </c:choose>
+                
+        <form action="${pageContext.request.contextPath}/SearchServlet" method="GET">
+            <input type="submit" value="search"><input type="text" name="search">
+            <select name="type">
+                 <option value="ITEMS">item</option>
+                 <option value="LABELS">label</option>
+                 <option value="BANDS">band</option>
+            </select>
+        </form>
     </body>
 </html>

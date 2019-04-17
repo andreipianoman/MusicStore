@@ -16,8 +16,7 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <body>
-        <%@ include file="./utils/menu.jsp" %>
+        <%@ include file="./utils/admin.jsp" %>
         <sql:setDataSource 
         var="snapshot" 
         driver="org.apache.derby.jdbc.ClientDriver"
@@ -34,7 +33,7 @@
             INNER JOIN METAL.LABELS ON METAL.ITEMS.LABEL_ID = METAL.LABELS.ID
         </sql:query>
         <h1>Admin Items</h1>
-        <form action="${pageContext.request.contextPath}/AdminItemsServlet" method="POST"">
+        <form action="${pageContext.request.contextPath}/AdminItemsServlet" method="POST">
         <table border="1">
             <thead>
                 <tr>
@@ -134,6 +133,5 @@
         <br>
         <input type="submit" value="delete" name="delete">
         </form>
-    </body>
     </body>
 </html>

@@ -56,6 +56,10 @@
         <servlet-name>AdminImagesServlet</servlet-name>
         <servlet-class>servlets.AdminImagesServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SearchServlet</servlet-name>
+        <servlet-class>servlets.SearchServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Index</servlet-name>
         <url-pattern>/Index</url-pattern>
@@ -111,6 +115,10 @@
     <servlet-mapping>
         <servlet-name>AdminImagesServlet</servlet-name>
         <url-pattern>/AdminImagesServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchServlet</servlet-name>
+        <url-pattern>/SearchServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
