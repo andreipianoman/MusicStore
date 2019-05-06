@@ -55,14 +55,13 @@ public class AdminItemsServlet extends HttpServlet {
                 
                 String itemName = request.getParameter("Item name");
                 String price = request.getParameter("price");
-                String stock = request.getParameter("stock");
                 String categoryID = request.getParameter("category");
                 String bandID = request.getParameter("band");
                 String genreID = request.getParameter("genre");
                 String labelID = request.getParameter("label");
                 String imageID = request.getParameter("imageCheckbox");
                 
-                if ("".equals(itemName) || "".equals(price) || "".equals(stock) || imageID == null) {
+                if ("".equals(itemName) || "".equals(price) || imageID == null) {
                     request.getRequestDispatcher("./bandsAdmin.jsp").forward(request, response);
                     return;
                 }
@@ -82,7 +81,7 @@ public class AdminItemsServlet extends HttpServlet {
                 }
                 Integer newItemId = count_id;
                 
-                String insertItem = "INSERT INTO METAL.ITEMS (ID, NAME, PRICE, STOCK, CATEGORY_ID, IMAGE_ID, BAND_ID, GENRE_ID, LABEL_ID) VALUES (" + newItemId + ", '" + itemName + "', " + price + ", " + stock  + ", " + categoryID + ", " + imageID + ", " + bandID + ", " + genreID + ", " + labelID + ")";
+                String insertItem = "INSERT INTO METAL.ITEMS (ID, NAME, PRICE, STOCK, CATEGORY_ID, IMAGE_ID, BAND_ID, GENRE_ID, LABEL_ID) VALUES (" + newItemId + ", '" + itemName + "', " + price + ", 0," + categoryID + ", " + imageID + ", " + bandID + ", " + genreID + ", " + labelID + ")";
                 statement.execute(insertItem);
                 
                 request.getRequestDispatcher("./itemsAdmin.jsp").forward(request, response);
@@ -90,7 +89,6 @@ public class AdminItemsServlet extends HttpServlet {
                 String[] selectedIdCheckboxes = request.getParameterValues("itemIdCheckbox");
                 String itemName = request.getParameter("Item name");
                 String price = request.getParameter("price");
-                String stock = request.getParameter("stock");
                 String categoryID = request.getParameter("category");
                 String bandID = request.getParameter("band");
                 String genreID = request.getParameter("genre");
@@ -111,9 +109,6 @@ public class AdminItemsServlet extends HttpServlet {
                     }
                     if (!("".equals(price))) {
                         updateItem = updateItem + ", METAL.ITEMS.PRICE = " + price;
-                    }
-                    if (!("".equals(stock))) {
-                        updateItem = updateItem + ", METAL.ITEMS.STOCK = " + stock;
                     }
                     if (!(imageID == null)) {
                         updateItem = updateItem + ", METAL.ITEMS.IMAGE_ID = " + imageID;

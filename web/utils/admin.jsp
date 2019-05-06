@@ -23,6 +23,7 @@
                 <a href="genresAdmin.jsp">Genres</a>
                 <a href="itemsAdmin.jsp">Items</a>
                 <a href="usersAdmin.jsp">Users</a>
+                <a href="stocksAdmin.jsp">Stocks</a>
                 <a href="MainPage.jsp">Main Page</a>
             </c:when>
             <c:otherwise>
